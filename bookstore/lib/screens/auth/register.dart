@@ -1,10 +1,12 @@
+
 import 'package:bookstore/consts/validator.dart';
+import 'package:bookstore/screens/auth/avatar_widget.dart';
 import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/widgets/appname_text.dart';
-import 'package:bookstore/widgets/subtitle_text.dart';
 import 'package:bookstore/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -27,6 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late final FocusNode nameFocusNode;
 
   final formkey = GlobalKey<FormState>();
+  XFile? avatarUser;
 
   @override
   void initState() {
@@ -60,8 +63,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
     FocusScope.of(context).unfocus();
   }
 
+  Future<void> localImagePicker() async {
+    final ImagePicker imagePicker = ImagePicker();
+    await MyAppFunction.ImagePickerDialog(
+      context: context,
+      cameraFunct: () async {
+        avatarUser = await imagePicker.pickImage(source: ImageSource.camera);
+        setState(() {});
+      },
+      galeryFunct: () async {
+        avatarUser = await imagePicker.pickImage(source: ImageSource.gallery);
+        setState(() {});
+      },
+      removeFunct: () async {
+        setState(() {
+          avatarUser = null;  
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -83,9 +107,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const Align(
                     alignment: Alignment.centerLeft,
-                    child: TitleTextWidget(label: "welcome back!")),
+                    child: TitleTextWidget(
+                        label: "Chào bạn đến với bookstore của chúng tôi!")),
                 const SizedBox(
-                  height: 16,
+                  height: 30,
+                ),
+                SizedBox(
+                  height: size.width * 0.3,
+                  width: size.width * 0.3,
+                  child: AvatarWidget(
+                    avatarUser: avatarUser,
+                    function: () async {
+                      await localImagePicker();
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
                 ),
                 Form(
                     key: formkey,
@@ -142,14 +180,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           keyboardType: TextInputType.visiblePassword,
                           obscureText: hidePassword,
                           decoration: InputDecoration(
-                              hintText: "*********",
+                              hintText: "Password",
                               prefixIcon: const Icon(
                                 Ionicons.key,
                               ),
                               suffixIcon: IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      hidePassword= !hidePassword;
+                                      hidePassword = !hidePassword;
                                     });
                                   },
                                   icon: Icon(hidePassword
@@ -176,7 +214,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               suffixIcon: IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      hidePassword= !hidePassword;
+                                      hidePassword = !hidePassword;
                                     });
                                   },
                                   icon: Icon(hidePassword
@@ -218,17 +256,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(
                           height: 16,
                         ),
-                        SizedBox(
+                        const SizedBox(
                             child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton.icon(
-                            icon: const BackButton(color: Colors.red,),
-                            label: const Text(
-                              "Back to Login",
-                            ),
-                            onPressed: () {
-                                
-                            },
+                          padding: EdgeInsets.all(8.0),
+                          child: BackButton(
+                            color: Colors.red,
                           ),
                         )),
                       ],

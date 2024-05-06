@@ -1,5 +1,6 @@
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/subtitle_text.dart';
+import 'package:bookstore/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 
 class MyAppFunction {
@@ -46,6 +47,7 @@ class MyAppFunction {
                 ),
                 TextButton(
                   onPressed: () {
+                    fct();
                     Navigator.pop(context);
                   },
                   child: const SubtitleTextWidget(
@@ -57,5 +59,65 @@ class MyAppFunction {
             ]),
           );
         });
+  }
+
+  static Future<void> ImagePickerDialog ({
+    required BuildContext context,
+    required Function cameraFunct,
+    required Function galeryFunct,
+    required Function removeFunct,
+
+    }) async{
+    await showDialog(context: context, builder: (BuildContext context){
+      return  AlertDialog(
+          title: const Center(
+            child: TitleTextWidget(
+               label: "Choose Option",),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+            children: [
+              TextButton.icon(
+                onPressed: (){
+                  cameraFunct();
+                  if(Navigator.canPop(context)){
+                    Navigator.pop(context);
+                  }
+                }, 
+                icon: const Icon(Icons.camera), 
+                label: const Text("Camera"), 
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+              TextButton.icon(
+                onPressed: (){
+                  cameraFunct();
+                  if(Navigator.canPop(context)){
+                    Navigator.pop(context);
+                  }
+                }, 
+                icon: const Icon(Icons.browse_gallery), 
+                label: const Text("Galery"), 
+                ),
+                      const SizedBox(
+                  height: 10,
+                ),
+              TextButton.icon(
+                onPressed: (){
+                  cameraFunct();
+                  if(Navigator.canPop(context)){
+                    Navigator.pop(context);
+                  }
+                }, 
+                icon: const Icon(Icons.remove_circle_outline), 
+                label: const Text("Remove"), 
+                ),
+          ],
+          ),
+          ),
+      );
+    });
+    
   }
 }

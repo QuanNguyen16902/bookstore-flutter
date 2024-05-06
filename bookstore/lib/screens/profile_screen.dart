@@ -1,3 +1,4 @@
+import 'package:bookstore/inner_screen/orders/order_screen.dart';
 import 'package:bookstore/inner_screen/viewed_recently.dart';
 import 'package:bookstore/inner_screen/wishlist.dart';
 import 'package:bookstore/providers/theme_provider.dart';
@@ -106,7 +107,9 @@ class ProfileScreen extends StatelessWidget {
                 CustomListTile(
                     imagePath: AssetManager.orders,
                     text: "Đơn hàng",
-                    function: () {}),
+                    function: () {
+                      Navigator.of(context).pushNamed(OrderScreen.routeName);
+                    }),
                 CustomListTile(
                     imagePath: AssetManager.wishlist,
                     text: "Yêu thích",

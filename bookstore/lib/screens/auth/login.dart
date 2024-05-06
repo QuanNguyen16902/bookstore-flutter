@@ -1,7 +1,8 @@
 import 'package:bookstore/consts/validator.dart';
+import 'package:bookstore/root_screen.dart';
+import 'package:bookstore/screens/auth/forgot_password.dart';
 import 'package:bookstore/screens/auth/google_btn.dart';
 import 'package:bookstore/screens/auth/register.dart';
-import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/widgets/appname_text.dart';
 import 'package:bookstore/widgets/subtitle_text.dart';
 import 'package:bookstore/widgets/title_text.dart';
@@ -10,7 +11,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
+ static const routeName = "/LoginScreen";
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -74,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const Align(
                     alignment: Alignment.centerLeft,
-                    child: TitleTextWidget(label: "welcome back!")),
+                    child: TitleTextWidget(label: "Xin chào!")),
                 const SizedBox(
                   height: 16,
                 ),
@@ -89,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
-                            hintText: "Email address",
+                            hintText: "Email",
                             prefixIcon: Icon(
                               IconlyLight.message,
                             ),
@@ -112,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           keyboardType: TextInputType.visiblePassword,
                           obscureText: hidePassword,
                           decoration:  InputDecoration(
-                              hintText: "*********",
+                              hintText: "Password",
                               prefixIcon: const Icon(
                                 IconlyLight.lock,
                               ),
@@ -136,7 +137,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamed(context, ForgotPasswordScreen.routeName);
+                              },
                               child: const SubtitleTextWidget(
                                 label: "Forgot password?",
                                 fontStyle: FontStyle.italic,
@@ -209,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           fontWeight: FontWeight.normal),
                                     ),
                                     onPressed: () async {
-                                      await loginFunction();
+                                      Navigator.of(context).pushNamed(RootScreen.routeName);
                                     },
                                   ),
                                 ),

@@ -1,16 +1,21 @@
+import 'package:bookstore/providers/cart_provider.dart';
 import 'package:bookstore/screens/cart/bottom_checkout.dart';
 import 'package:bookstore/screens/cart/cart_widget.dart';
+import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/empty_cart.dart';
 import 'package:bookstore/widgets/title_text.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
   final bool isEmpty = false;
   @override
   Widget build(BuildContext context) {
-    return isEmpty
+    final cartProvider = Provider.of<CartProvider>(context);
+
+    return cartProvider.getCartItems.isEmpty
         ? Scaffold(
             body: EmptyCartWidget(
             buttonText: "Go Shopping",
@@ -32,23 +37,42 @@ class CartScreen extends StatelessWidget {
                   fit: BoxFit.fill,
                 ),
               ),
-              title: const TitleTextWidget(
-                label: "Cart (6)",
+              title: TitleTextWidget(
+                label: "Cart (${cartProvider.getCartItems.length})",
               ),
               actions: [
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      MyAppFunction.showErrorOrWarningDialog(
+                        isError: false,
+                        context: context, subtitle: "Xóa giỏ hàng",
+                        fct: (){
+                          cartProvider.clearLocalCart();
+                      });
+                    },
                     icon: const Icon(
                       Icons.delete_sweep_rounded,
                       color: Colors.red,
                     ))
               ],
             ),
-            body: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return const CartWidget();
-              },
+            body: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: cartProvider.getCartItems.length,
+                    itemBuilder: (context, index) {
+                      return ChangeNotifierProvider.value(
+                          value:
+                              cartProvider.getCartItems.values.toList()[index],
+                          child: const CartWidget());
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: kBottomNavigationBarHeight + 10,
+                )
+              ],
             ),
           );
   }

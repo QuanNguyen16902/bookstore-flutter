@@ -5,12 +5,12 @@ class AppConstant {
   static List<CategoryModel> categoryList = [
     CategoryModel(
       id: AssetManager.book1,
-      name: 'Computing',
+      name: 'Văn hóa',
       image: AssetManager.book1,
     ),
     CategoryModel(
       id: AssetManager.book3,
-      name: 'Math',
+      name: 'Tri thức',
       image: AssetManager.book3,
     ),
     CategoryModel(

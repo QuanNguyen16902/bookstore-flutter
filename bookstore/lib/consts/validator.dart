@@ -10,7 +10,7 @@ class MyValidator {
   }
 
   static String? emailValidator(String value) {
-    if (value!.isEmpty) {
+    if (value.isEmpty) {
       return "Hãy nhập email";
     }
     if (!RegExp(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
@@ -21,7 +21,7 @@ class MyValidator {
   }
 
   static String? passwordValidator(String value){
-    if(value!.isEmpty){
+    if(value.isEmpty){
         return "Hãy nhập mật khẩu";
     }
     if(value.length < 6){

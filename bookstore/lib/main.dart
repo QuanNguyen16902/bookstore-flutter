@@ -1,11 +1,18 @@
 import 'package:bookstore/consts/theme_data.dart';
 import 'package:bookstore/inner_screen/book_details.dart';
+import 'package:bookstore/inner_screen/orders/order_screen.dart';
 import 'package:bookstore/inner_screen/viewed_recently.dart';
 import 'package:bookstore/inner_screen/wishlist.dart';
+import 'package:bookstore/providers/book_provider.dart';
+import 'package:bookstore/providers/cart_provider.dart';
 import 'package:bookstore/providers/theme_provider.dart';
+import 'package:bookstore/providers/viewed_book_provider.dart';
+import 'package:bookstore/providers/wishlist_provider.dart';
 import 'package:bookstore/root_screen.dart';
+import 'package:bookstore/screens/auth/forgot_password.dart';
 import 'package:bookstore/screens/auth/login.dart';
 import 'package:bookstore/screens/auth/register.dart';
+import 'package:bookstore/screens/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,19 +30,36 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) {
           return ThemeProvider();
-        })
+        }),
+        ChangeNotifierProvider(create: (_){
+          return BookProvider();
+        }),
+        ChangeNotifierProvider(create: (_){
+          return CartProvider();
+        }),
+        ChangeNotifierProvider(create: (_){
+          return WishlistProvider();
+        }),
+        ChangeNotifierProvider(create: (_){
+          return ViewedBookProvider();
+        }),
       ],
       child: Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
         return MaterialApp(
           title: 'BookStore',
           theme: Styles.themeData(
               isDarkTheme: themeProvider.getIsDarkTheme, context: context),
-          home: const LoginScreen(),
+          home:
+          const LoginScreen(),
           routes: {
+            RootScreen.routeName: (context) => const RootScreen(),
             BookDetailsScreen.routeName: (context) => const BookDetailsScreen(),
             WishListScreen.routeName: (context) => const WishListScreen(),
             ViewedRecentlyScreen.routeName: (context) => const ViewedRecentlyScreen(),
             RegisterScreen.routeName: (context) => const RegisterScreen(),
+            ForgotPasswordScreen.routeName: (context) => const ForgotPasswordScreen(),
+            OrderScreen.routeName: (context) => const OrderScreen(),
+            SearchScreen.routeName: (context) => const SearchScreen(),
           },
         );
       }),

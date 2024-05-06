@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:bookstore/consts/app_constant.dart';
+import 'package:bookstore/providers/book_provider.dart';
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/appname_text.dart';
 import 'package:bookstore/widgets/products/category_widget.dart';
@@ -8,6 +9,7 @@ import 'package:bookstore/widgets/products/last_arrival_widget.dart';
 import 'package:bookstore/widgets/title_text.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -21,7 +23,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    // final themeProvider = Provider.of<ThemeProvider>(context);
+    final bookProvider = Provider.of<BookProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -68,7 +70,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 15,
               ),
-              TitleTextWidget(label: "Đã xem gần đây"),
+              TitleTextWidget(label: "Xem gần nhất"),
               const SizedBox(
                 height: 15,
               ),
@@ -76,9 +78,10 @@ class HomeScreen extends StatelessWidget {
                 height: size.height * 0.2,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 10,
+                  itemCount: bookProvider.getBooks.length,
                   itemBuilder: (context, index) {
-                    return LastArrivalProductWidget();
+                    return ChangeNotifierProvider.value(value: bookProvider.getBooks[index],
+                    child: LastArrivalProductWidget());
                   },
                 ),
               ),

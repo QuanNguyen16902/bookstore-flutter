@@ -1,9 +1,12 @@
+import 'package:bookstore/providers/wishlist_provider.dart';
+import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/empty_cart.dart';
 import 'package:bookstore/widgets/products/book_widget.dart';
 import 'package:bookstore/widgets/title_text.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class WishListScreen extends StatelessWidget {
   const WishListScreen({super.key});
@@ -11,7 +14,8 @@ class WishListScreen extends StatelessWidget {
   final bool isEmpty = true;
   @override
   Widget build(BuildContext context) {
-    return isEmpty
+    final wishlistProvider = Provider.of<WishlistProvider>(context);
+    return wishlistProvider.getWishlistItems.isEmpty
         ? Scaffold(
             body: EmptyCartWidget(
             buttonText: "Go Shopping",
@@ -32,12 +36,21 @@ class WishListScreen extends StatelessWidget {
                   fit: BoxFit.fill,
                 ),
               ),
-              title: const TitleTextWidget(
-                label: "Yêu thích (6)",
+              title: TitleTextWidget(
+                label: "Yêu thích (${wishlistProvider.getWishlistItems.length})",
               ),
               actions: [
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      MyAppFunction.showErrorOrWarningDialog(
+                      isError: false,
+                      context: context, 
+                      subtitle: "Clear wishlist", 
+                      fct: (){
+                          wishlistProvider.clearWishlist();
+                      }
+                      );
+                    },
                     icon: const Icon(
                       Icons.delete_sweep_rounded,
                       color: Colors.red,
@@ -49,9 +62,12 @@ class WishListScreen extends StatelessWidget {
                     mainAxisSpacing: 12,
                     crossAxisSpacing: 12,
                     builder: (context, index) {
-                      return const BookWidget();
+                      return  Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: BookWidget(bookId: wishlistProvider.getWishlistItems.values.toList()[index].bookId,),
+                      );
                     },
-                    itemCount: 10,
+                    itemCount: wishlistProvider.getWishlistItems.length,
                     crossAxisCount: 2),
           );
   }

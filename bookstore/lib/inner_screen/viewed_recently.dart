@@ -1,9 +1,12 @@
+import 'package:bookstore/providers/viewed_book_provider.dart';
+import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/empty_cart.dart';
 import 'package:bookstore/widgets/products/book_widget.dart';
 import 'package:bookstore/widgets/title_text.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ViewedRecentlyScreen extends StatelessWidget {
   const ViewedRecentlyScreen({super.key});
@@ -11,13 +14,14 @@ class ViewedRecentlyScreen extends StatelessWidget {
   final bool isEmpty = true;
   @override
   Widget build(BuildContext context) {
-    return isEmpty
+    final viewedBookProvider = Provider.of<ViewedBookProvider>(context);
+    return viewedBookProvider.getViewedBookItems.isEmpty
         ? Scaffold(
             body: EmptyCartWidget(
             buttonText: "Go Shopping",
             imagePath: AssetManager.shoppingBasket,
-            title: 'Chưa có cuốn sách nào trong wishlist!',
-            subtitle: 'Giỏ hàng của bạn đang trống! Hãy thêm sản phẩm',
+            title: 'Chưa có cuốn sách nào trong mục đã xem!',
+            subtitle: '',
           ))
         : Scaffold(
             appBar: AppBar(
@@ -32,27 +36,38 @@ class ViewedRecentlyScreen extends StatelessWidget {
                   fit: BoxFit.fill,
                 ),
               ),
-              title: const TitleTextWidget(
-                label: "Đã xem gần đây (6)",
+              title: TitleTextWidget(
+                label:
+                    "Đã xem gần đây (${viewedBookProvider.getViewedBookItems.length})",
               ),
               actions: [
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      MyAppFunction.showErrorOrWarningDialog(context: context,
+                      isError: false,
+                       subtitle: "Clear Viewed recently", 
+                       fct: (){
+                        viewedBookProvider.clearViewedRecently();
+                       });
+                    },
                     icon: const Icon(
                       Icons.delete_sweep_rounded,
                       color: Colors.red,
                     ))
               ],
             ),
-            body: 
-            DynamicHeightGridView(
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    builder: (context, index) {
-                      return const BookWidget();
-                    },
-                    itemCount: 10,
-                    crossAxisCount: 2),
+            body: DynamicHeightGridView(
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                builder: (context, index) {
+                  return BookWidget(
+                    bookId: viewedBookProvider.getViewedBookItems.values
+                        .toList()[index]
+                        .bookId,
+                  );
+                },
+                itemCount: viewedBookProvider.getViewedBookItems.length,
+                crossAxisCount: 2),
           );
   }
 }
