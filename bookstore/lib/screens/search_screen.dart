@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:bookstore/models/book_model.dart';
 import 'package:bookstore/providers/book_provider.dart';
-import 'package:bookstore/providers/cart_provider.dart';
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/products/book_widget.dart';
 import 'package:bookstore/widgets/title_text.dart';

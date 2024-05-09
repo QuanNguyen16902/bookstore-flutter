@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "709623761448",
+    "project_id": "viperbookstore",
+    "storage_bucket": "viperbookstore.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709623761448:android:b17b726c541ec9ee70431d",
+        "android_client_info": {
+          "package_name": "com.example.bookstore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2SNsC08enq4cY_yBqQ-v4vOBJTia9_fE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

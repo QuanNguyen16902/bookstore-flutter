@@ -6,6 +6,7 @@ import 'package:bookstore/inner_screen/wishlist.dart';
 import 'package:bookstore/providers/book_provider.dart';
 import 'package:bookstore/providers/cart_provider.dart';
 import 'package:bookstore/providers/theme_provider.dart';
+import 'package:bookstore/providers/user_provider.dart';
 import 'package:bookstore/providers/viewed_book_provider.dart';
 import 'package:bookstore/providers/wishlist_provider.dart';
 import 'package:bookstore/root_screen.dart';
@@ -13,10 +14,22 @@ import 'package:bookstore/screens/auth/forgot_password.dart';
 import 'package:bookstore/screens/auth/login.dart';
 import 'package:bookstore/screens/auth/register.dart';
 import 'package:bookstore/screens/search_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: "AIzaSyA2SNsC08enq4cY_yBqQ-v4vOBJTia9_fE",
+      authDomain: "viperbookstore.firebaseapp.com",
+      projectId: "viperbookstore",
+      storageBucket: "viperbookstore.appspot.com",
+      messagingSenderId: "your_messaging_sender_id",
+      appId: "com.example.bookstore",
+    ),
+  );
   runApp(const MyApp());
 }
 
@@ -26,44 +39,77 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) {
-          return ThemeProvider();
-        }),
-        ChangeNotifierProvider(create: (_){
-          return BookProvider();
-        }),
-        ChangeNotifierProvider(create: (_){
-          return CartProvider();
-        }),
-        ChangeNotifierProvider(create: (_){
-          return WishlistProvider();
-        }),
-        ChangeNotifierProvider(create: (_){
-          return ViewedBookProvider();
-        }),
-      ],
-      child: Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
-        return MaterialApp(
-          title: 'BookStore',
-          theme: Styles.themeData(
-              isDarkTheme: themeProvider.getIsDarkTheme, context: context),
-          home:
-          const LoginScreen(),
-          routes: {
-            RootScreen.routeName: (context) => const RootScreen(),
-            BookDetailsScreen.routeName: (context) => const BookDetailsScreen(),
-            WishListScreen.routeName: (context) => const WishListScreen(),
-            ViewedRecentlyScreen.routeName: (context) => const ViewedRecentlyScreen(),
-            RegisterScreen.routeName: (context) => const RegisterScreen(),
-            ForgotPasswordScreen.routeName: (context) => const ForgotPasswordScreen(),
-            OrderScreen.routeName: (context) => const OrderScreen(),
-            SearchScreen.routeName: (context) => const SearchScreen(),
-          },
-        );
-      }),
-    );
+    return FutureBuilder<FirebaseApp>(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return const MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: Scaffold(
+                body: Center(
+                  child:  CircularProgressIndicator(),
+                ),
+              ),
+            );
+          }
+          else if (snapshot.hasError) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: Scaffold(
+                body: Center(
+                  child: SelectableText(snapshot.error.toString()),
+                ),
+              ),
+            );
+          }
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) {
+                return ThemeProvider();
+              }),
+              ChangeNotifierProvider(create: (_) {
+                return BookProvider();
+              }),
+              ChangeNotifierProvider(create: (_) {
+                return CartProvider();
+              }),
+              ChangeNotifierProvider(create: (_) {
+                return WishlistProvider();
+              }),
+              ChangeNotifierProvider(create: (_) {
+                return ViewedBookProvider();
+              }),
+              ChangeNotifierProvider(create: (_) {
+                return UserProvider();
+              }),
+            ],
+            child: Consumer<ThemeProvider>(
+                builder: (context, themeProvider, child) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'BookStore',
+                theme: Styles.themeData(
+                    isDarkTheme: themeProvider.getIsDarkTheme,
+                    context: context),
+                home: const LoginScreen(),
+                routes: {
+                  RootScreen.routeName: (context) => const RootScreen(),
+                  BookDetailsScreen.routeName: (context) =>
+                      const BookDetailsScreen(),
+                  WishListScreen.routeName: (context) => const WishListScreen(),
+                  ViewedRecentlyScreen.routeName: (context) =>
+                      const ViewedRecentlyScreen(),
+                  RegisterScreen.routeName: (context) => const RegisterScreen(),
+                  ForgotPasswordScreen.routeName: (context) =>
+                      const ForgotPasswordScreen(),
+                  OrderScreen.routeName: (context) => const OrderScreen(),
+                  SearchScreen.routeName: (context) => const SearchScreen(),
+                  LoginScreen.routeName: (context) => const LoginScreen(),
+                },
+              );
+            }),
+          );
+        });
   }
 }
 

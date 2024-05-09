@@ -1,19 +1,48 @@
 import 'package:bookstore/inner_screen/orders/order_screen.dart';
 import 'package:bookstore/inner_screen/viewed_recently.dart';
 import 'package:bookstore/inner_screen/wishlist.dart';
+import 'package:bookstore/models/users_model.dart';
 import 'package:bookstore/providers/theme_provider.dart';
+import 'package:bookstore/providers/user_provider.dart';
+import 'package:bookstore/screens/auth/login.dart';
 import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/appname_text.dart';
 import 'package:bookstore/widgets/subtitle_text.dart';
 import 'package:bookstore/widgets/title_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel? userModel;
+  bool isLoading = true;
+  Future<void> fetchUserInfo() async{
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    try{
+      userModel = await userProvider.fetchUserInfo();
+    }catch(error){
+      await MyAppFunction.showErrorOrWarningDialog(context: context, subtitle: error.toString(), fct: (){});
+    }finally{
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+  @override
+  void initState(){
+    fetchUserInfo();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -70,15 +99,15 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(
                     width: 10,
                   ),
-                  const Column(
+                   const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TitleTextWidget(label: "Manh Quan"),
+                      TitleTextWidget(label: "ManhQuan"),
                       SizedBox(
                         height: 3,
                       ),
                       SubtitleTextWidget(
-                        label: "Quannguyen169@gmail.com",
+                        label: "Quannguyen@gmail.com",
                       )
                     ],
                   ),
@@ -176,17 +205,26 @@ class ProfileScreen extends StatelessWidget {
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0))),
-              icon: const Icon(Icons.login),
-              label: const Text(
-                "Đăng nhập",
+              icon: Icon(user == null ? Icons.login : Icons.logout),
+              label: Text(
+                user == null ? "Login" : "Logout",
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () async {
-                await MyAppFunction.showErrorOrWarningDialog(
-                    context: context,
-                    subtitle: "Bạn có muốn đăng xuất? ",
-                    fct: () {},
-                    isError: false);
+                if (user == null) {
+                  Navigator.pushNamed(context, LoginScreen.routeName);
+                } else {
+                  await MyAppFunction.showErrorOrWarningDialog(
+                      context: context,
+                      subtitle: "Bạn có muốn đăng xuất? ",
+                      fct: () async {
+                        await FirebaseAuth.instance.signOut();
+                        if (!mounted) return;
+                        Navigator.pushReplacementNamed(
+                            context, LoginScreen.routeName);
+                      },
+                      isError: false);
+                }
               },
             ),
           ),
