@@ -1,4 +1,5 @@
 import 'package:bookstore/inner_screen/orders/order_widget.dart';
+import 'package:bookstore/screens/search_screen.dart';
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/empty_cart.dart';
 import 'package:bookstore/widgets/title_text.dart';
@@ -27,7 +28,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 imagePath: AssetManager.bagimagesPath,
                 title: "Giỏ hàng trống",
                 subtitle: "Chưa có sách trong giỏ hàng",
-                buttonText: "Whoops")
+                buttonText: "Whoops", route: SearchScreen.routeName,)
             :
               ListView.separated(
               itemCount: 15,

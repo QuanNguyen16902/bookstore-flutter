@@ -14,8 +14,8 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
- static const routeName = "/LoginScreen";
   const LoginScreen({super.key});
+  static const routeName = "/LoginScreen";
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -65,26 +65,21 @@ class _LoginScreenState extends State<LoginScreen> {
             email: emailController.text.trim(),
             password: passwordController.text.trim());
         Fluttertoast.showToast(
-          msg: "Đăng nhập thành công",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER_LEFT,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-        );
+            msg: "Đăng nhập thành công",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER_LEFT,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
         if (!mounted) return;
         Navigator.pushReplacementNamed(context, RootScreen.routeName);
       } on FirebaseException catch (error) {
         await MyAppFunction.showErrorOrWarningDialog(
-            context: context,
-            subtitle: error.message.toString(),
-            fct: () {});
+            context: context, subtitle: error.message.toString(), fct: () {});
       } catch (error) {
         await MyAppFunction.showErrorOrWarningDialog(
-            context: context,
-            subtitle: error.toString(),
-            fct: () {});
+            context: context, subtitle: error.toString(), fct: () {});
       } finally {
         setState(() {
           isLoading = false;
@@ -155,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             textInputAction: TextInputAction.done,
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: hidePassword,
-                            decoration:  InputDecoration(
+                            decoration: InputDecoration(
                                 hintText: "Password",
                                 prefixIcon: const Icon(
                                   IconlyLight.lock,
@@ -163,10 +158,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 suffixIcon: IconButton(
                                     onPressed: () {
                                       setState(() {
-                                         hidePassword = !hidePassword;
+                                        hidePassword = !hidePassword;
                                       });
                                     },
-                                    icon: Icon(hidePassword ? Icons.visibility : Icons.visibility_off))),
+                                    icon: Icon(hidePassword
+                                        ? Icons.visibility
+                                        : Icons.visibility_off))),
                             validator: (value) {
                               return MyValidator.passwordValidator(value!);
                             },
@@ -181,7 +178,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             alignment: Alignment.centerRight,
                             child: TextButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(context, ForgotPasswordScreen.routeName);
+                                  Navigator.pushNamed(
+                                      context, ForgotPasswordScreen.routeName);
                                 },
                                 child: const SubtitleTextWidget(
                                   label: "Forgot password?",
@@ -255,7 +253,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                             fontWeight: FontWeight.normal),
                                       ),
                                       onPressed: () async {
-                                        Navigator.of(context).pushNamed(RootScreen.routeName);
+                                        Navigator.of(context)
+                                            .pushNamed(RootScreen.routeName);
                                       },
                                     ),
                                   ),

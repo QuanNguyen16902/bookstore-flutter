@@ -1,4 +1,5 @@
 import 'package:bookstore/providers/viewed_book_provider.dart';
+import 'package:bookstore/screens/search_screen.dart';
 import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/empty_cart.dart';
@@ -21,7 +22,7 @@ class ViewedRecentlyScreen extends StatelessWidget {
             buttonText: "Go Shopping",
             imagePath: AssetManager.shoppingBasket,
             title: 'Chưa có cuốn sách nào trong mục đã xem!',
-            subtitle: '',
+            subtitle: '', route: SearchScreen.routeName,
           ))
         : Scaffold(
             appBar: AppBar(
@@ -29,7 +30,7 @@ class ViewedRecentlyScreen extends StatelessWidget {
               elevation: 0,
               leading: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Image.asset(
+                child: Image.network(
                   "${AssetManager.imagesPath}/book-shop.png",
                   width: 40,
                   height: 40,

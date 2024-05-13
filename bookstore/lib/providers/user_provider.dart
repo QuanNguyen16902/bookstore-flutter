@@ -27,11 +27,11 @@ class UserProvider with ChangeNotifier{
               userImage: userDoc.get("userImage"),
               userCart: userDocDict.containsKey("userCart") ? userDoc.get("userCart") : [], 
               userWishlist: userDocDict.containsKey("userWishlist") ? userDoc.get("userWishlist") : [],
-              createAt: userDoc.get("createAt"),
+              createdAt: userDoc.get("createdAt"),
               );
               return userModel;
     }on FirebaseException catch(error){
-
+        rethrow;
     }catch(error){
       rethrow;
     }

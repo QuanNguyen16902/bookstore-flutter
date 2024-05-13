@@ -1,6 +1,7 @@
 import 'package:bookstore/providers/cart_provider.dart';
 import 'package:bookstore/screens/cart/bottom_checkout.dart';
 import 'package:bookstore/screens/cart/cart_widget.dart';
+import 'package:bookstore/screens/search_screen.dart';
 import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/empty_cart.dart';
@@ -22,6 +23,7 @@ class CartScreen extends StatelessWidget {
             imagePath: AssetManager.shoppingBasket,
             title: 'Giỏ hàng trống',
             subtitle: 'Giỏ hàng của bạn đang trống! Hãy thêm sản phẩm',
+            route: SearchScreen.routeName,
           ))
         : Scaffold(
             bottomSheet: const BottonCheckoutWidget(),
@@ -31,10 +33,10 @@ class CartScreen extends StatelessWidget {
               leading: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Image.asset(
-                  "${AssetManager.imagesPath}/book-shop.png",
                   width: 40,
                   height: 40,
                   fit: BoxFit.fill,
+                  '${AssetManager.imagesPath}/book-shop.png',
                 ),
               ),
               title: TitleTextWidget(
@@ -44,11 +46,12 @@ class CartScreen extends StatelessWidget {
                 IconButton(
                     onPressed: () {
                       MyAppFunction.showErrorOrWarningDialog(
-                        isError: false,
-                        context: context, subtitle: "Xóa giỏ hàng",
-                        fct: (){
-                          cartProvider.clearLocalCart();
-                      });
+                          isError: false,
+                          context: context,
+                          subtitle: "Xóa giỏ hàng",
+                          fct: () {
+                            cartProvider.clearLocalCart();
+                          });
                     },
                     icon: const Icon(
                       Icons.delete_sweep_rounded,

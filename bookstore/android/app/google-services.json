@@ -12,7 +12,12 @@
           "package_name": "com.example.bookstore"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "709623761448-51fhruoi2o19fbf9dc6b7elotsvvufo1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA2SNsC08enq4cY_yBqQ-v4vOBJTia9_fE"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "709623761448-51fhruoi2o19fbf9dc6b7elotsvvufo1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

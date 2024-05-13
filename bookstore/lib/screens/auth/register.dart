@@ -90,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         Fluttertoast.showToast(
           msg: "Đăng ký thành công",
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+          gravity: ToastGravity.BOTTOM_LEFT,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,

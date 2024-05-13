@@ -1,4 +1,5 @@
 import 'package:bookstore/providers/wishlist_provider.dart';
+import 'package:bookstore/screens/search_screen.dart';
 import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/empty_cart.dart';
@@ -22,7 +23,8 @@ class WishListScreen extends StatelessWidget {
             imagePath: AssetManager.wishlist,
             title: 'Chưa có cuốn sách nào!',
             subtitle: 'Giỏ hàng của bạn đang trống! Hãy thêm sản phẩm',
-          ))
+            route: SearchScreen.routeName,
+          ),)
         : Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,

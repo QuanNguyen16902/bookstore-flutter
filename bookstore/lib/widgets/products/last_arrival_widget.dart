@@ -2,8 +2,6 @@ import 'package:bookstore/inner_screen/book_details.dart';
 import 'package:bookstore/models/book_model.dart';
 import 'package:bookstore/providers/cart_provider.dart';
 import 'package:bookstore/providers/viewed_book_provider.dart';
-import 'package:bookstore/providers/wishlist_provider.dart';
-import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/products/heart_btn.dart';
 import 'package:bookstore/widgets/subtitle_text.dart';
 import 'package:flutter/material.dart';

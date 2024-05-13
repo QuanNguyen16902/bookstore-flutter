@@ -115,7 +115,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       icon: const Icon(IconlyBold.send), 
                       label:  const Text(
                           "Request Link",
-                        style: TextStyle( fontSize: 22),                          
+                        style: TextStyle( fontSize: 22),
                       ),
                     ),
                 )

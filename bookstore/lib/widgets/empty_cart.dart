@@ -9,9 +9,11 @@ class EmptyCartWidget extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.buttonText,
+    required this.route,
+    
   });
 
-  final String imagePath, title, subtitle, buttonText;
+  final String imagePath, title, subtitle, buttonText, route;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +60,9 @@ class EmptyCartWidget extends StatelessWidget {
                   backgroundColor: Colors.red,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 15)),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, route);
+              },
               child: Text(
                 buttonText,
                 style: const TextStyle(color: Colors.white),

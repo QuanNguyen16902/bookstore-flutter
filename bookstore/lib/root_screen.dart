@@ -8,10 +8,10 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
-  static const routeName = "/RootScreen";
   const RootScreen({super.key});
+  static const routeName = "/RootScreen";
   @override
-  State<StatefulWidget> createState() => _RootScreenState();
+  State<RootScreen> createState() => _RootScreenState();
 }
 
 class _RootScreenState extends State<RootScreen> {
@@ -42,6 +42,7 @@ class _RootScreenState extends State<RootScreen> {
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentScreen,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 10,
         height: kBottomNavigationBarHeight,
         onDestinationSelected: (index) {

@@ -1,3 +1,4 @@
+import 'package:bookstore/inner_screen/loadding_widget.dart';
 import 'package:bookstore/inner_screen/orders/order_screen.dart';
 import 'package:bookstore/inner_screen/viewed_recently.dart';
 import 'package:bookstore/inner_screen/wishlist.dart';
@@ -22,29 +23,41 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveClientMixin{
+  @override
+  bool get wantKeepAlive => true;
+
   User? user = FirebaseAuth.instance.currentUser;
   UserModel? userModel;
   bool isLoading = true;
-  Future<void> fetchUserInfo() async{
+  Future<void> fetchUserInfo() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    try{
+    try {
+      setState(() {
+        isLoading = true;
+      });
       userModel = await userProvider.fetchUserInfo();
-    }catch(error){
-      await MyAppFunction.showErrorOrWarningDialog(context: context, subtitle: error.toString(), fct: (){});
-    }finally{
+    } catch (error) {
+      await MyAppFunction.showErrorOrWarningDialog(
+          context: context,
+          subtitle: error.toString(),
+          fct: () {});
+    } finally {
       setState(() {
         isLoading = false;
       });
     }
   }
+
   @override
-  void initState(){
+  void initState() {
     fetchUserInfo();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
@@ -63,20 +76,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           fontSize: 20,
         ),
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Visibility(
-            visible: false,
-            child: Padding(
-              padding: EdgeInsets.all(18.0),
-              child: TitleTextWidget(
-                  label: "Ban hay dang nhap de truy cap thong tin"),
+      body: LoadingWidget(
+        isLoading: isLoading, 
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, 
+            children: [
+             Visibility(
+              visible: user == null ? true : false ,
+              child: const Padding(
+                padding: EdgeInsets.all(18.0),
+                child: TitleTextWidget(
+                    label: "Ban hay dang nhap de truy cap thong tin"),
+              ),
             ),
-          ),
-          Visibility(
-            visible: true,
-            child: Padding(
+            userModel == null ? const SizedBox.shrink() : Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
@@ -90,8 +105,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Theme.of(context).colorScheme.background,
                         width: 3,
                       ),
-                      image: const DecorationImage(
-                        image: AssetImage("images/avatar.jpg"),
+                      image:  DecorationImage(
+                        image: NetworkImage(userModel!.userImage),
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -99,139 +114,147 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(
                     width: 10,
                   ),
-                   const Column(
+                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TitleTextWidget(label: "ManhQuan"),
-                      SizedBox(
+                      TitleTextWidget(label: userModel!.userName),
+                      const SizedBox(
                         height: 3,
                       ),
                       SubtitleTextWidget(
-                        label: "Quannguyen@gmail.com",
+                        label:  userModel!.userEmail,
                       )
                     ],
                   ),
                 ],
               ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Divider(
-                  thickness: 1,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const TitleTextWidget(label: "General"),
-                const SizedBox(
-                  height: 10,
-                ),
-                CustomListTile(
-                    imagePath: AssetManager.orders,
-                    text: "Đơn hàng",
-                    function: () {
-                      Navigator.of(context).pushNamed(OrderScreen.routeName);
-                    }),
-                CustomListTile(
-                    imagePath: AssetManager.wishlist,
-                    text: "Yêu thích",
-                    function: () {
-                      Navigator.pushNamed(context, WishListScreen.routeName);
-                    }),
-                CustomListTile(
-                    imagePath: AssetManager.viewed,
-                    text: "Đã xem gần đây",
-                    function: () {
-                      Navigator.pushNamed(
-                          context, ViewedRecentlyScreen.routeName);
-                    }),
-                CustomListTile(
-                    imagePath: AssetManager.address,
-                    text: "Địa chỉ",
-                    function: () {}),
-                const Divider(
-                  thickness: 1,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const TitleTextWidget(label: "Settings"),
-                const SizedBox(
-                  height: 10,
-                ),
-                SwitchListTile(
-                    secondary: Image.asset(
-                      AssetManager.darkLightMode,
-                      height: 34,
-                    ),
-                    title: Text(themeProvider.getIsDarkTheme
-                        ? "Dark Mode"
-                        : "Light Mode"),
-                    value: themeProvider.getIsDarkTheme,
-                    onChanged: (value) {
-                      themeProvider.setDarkTheme(themValue: value);
-                    }),
-              ],
+            const SizedBox(
+              height: 10,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Divider(
-                  thickness: 1,
-                ),
-                const TitleTextWidget(label: "Others"),
-                CustomListTile(
-                  imagePath: AssetManager.address,
-                  text: 'Privacy and policy',
-                  function: () {},
-                ),
-              ],
-            ),
-          ),
-          Center(
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0))),
-              icon: Icon(user == null ? Icons.login : Icons.logout),
-              label: Text(
-                user == null ? "Login" : "Logout",
-                style: TextStyle(color: Colors.white),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Divider(
+                    thickness: 1,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const TitleTextWidget(label: "General"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Visibility(
+                      visible: userModel == null ? false : true,
+                    child: CustomListTile(
+                        imagePath: AssetManager.orders,
+                        text: "Đơn hàng",
+                        function: () {
+                          Navigator.of(context).pushNamed(OrderScreen.routeName);
+                        }),
+                  ),
+                  Visibility(
+                    visible: userModel == null ? false : true,
+                    child: CustomListTile(
+                        imagePath: AssetManager.wishlist,
+                        text: "Yêu thích",
+                        function: () {
+                          Navigator.pushNamed(context, WishListScreen.routeName);
+                        }),
+                  ),
+                  CustomListTile(
+                      imagePath: AssetManager.viewed,
+                      text: "Đã xem gần đây",
+                      function: () {
+                        Navigator.pushNamed(
+                            context, ViewedRecentlyScreen.routeName);
+                      }),
+                  CustomListTile(
+                      imagePath: AssetManager.address,
+                      text: "Địa chỉ",
+                      function: () {}),
+                  const Divider(
+                    thickness: 1,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const TitleTextWidget(label: "Settings"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SwitchListTile(
+                      secondary: Image.asset(
+                        AssetManager.darkLightMode,
+                        height: 34,
+                      ),
+                      title: Text(themeProvider.getIsDarkTheme
+                          ? "Dark Mode"
+                          : "Light Mode"),
+                      value: themeProvider.getIsDarkTheme,
+                      onChanged: (value) {
+                        themeProvider.setDarkTheme(themValue: value);
+                      }),
+                ],
               ),
-              onPressed: () async {
-                if (user == null) {
-                  Navigator.pushNamed(context, LoginScreen.routeName);
-                } else {
-                  await MyAppFunction.showErrorOrWarningDialog(
-                      context: context,
-                      subtitle: "Bạn có muốn đăng xuất? ",
-                      fct: () async {
-                        await FirebaseAuth.instance.signOut();
-                        if (!mounted) return;
-                        Navigator.pushReplacementNamed(
-                            context, LoginScreen.routeName);
-                      },
-                      isError: false);
-                }
-              },
             ),
-          ),
-        ]),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Divider(
+                    thickness: 1,
+                  ),
+                  const TitleTextWidget(label: "Others"),
+                  CustomListTile(
+                    imagePath: AssetManager.address,
+                    text: 'Privacy and policy',
+                    function: () {},
+                  ),
+                ],
+              ),
+            ),
+            Center(
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0))),
+                icon: Icon(user == null ? Icons.login : Icons.logout),
+                label: Text(
+                  user == null ? "Login" : "Logout",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () async {
+                  if (user == null) {
+                    Navigator.pushNamed(context, LoginScreen.routeName);
+                  } else {
+                    await MyAppFunction.showErrorOrWarningDialog(
+                        context: context,
+                        subtitle: "Bạn có muốn đăng xuất? ",
+                        fct: () async {
+                          await FirebaseAuth.instance.signOut();
+                          if (!mounted) return;
+                          Navigator.pushReplacementNamed(
+                              context, LoginScreen.routeName);
+                        },
+                        isError: false);
+                  }
+                },
+              ),
+            ),
+          ]),
+        ),
       ),
     );
   }
+  
+
 }
 
 class CustomListTile extends StatelessWidget {
