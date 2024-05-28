@@ -3,6 +3,7 @@ import 'package:bookstore/models/users_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class UserProvider with ChangeNotifier {
   UserModel? userModel;
@@ -55,6 +56,42 @@ class UserProvider with ChangeNotifier {
     } on FirebaseException catch (error) {
       rethrow;
     } catch (error) {
+      rethrow;
+    }
+  }
+  
+  Future<void> removeAddressFromFirestore ({
+    required userstDb,
+    required User currentUser,
+    required String addressId,
+    required String street,
+    required String city,
+    required String state,
+    required String zipCode,
+    required String country,
+  }) async {
+    try {
+      
+      await userstDb.doc(currentUser!.uid).update({
+        'addresses': FieldValue.arrayRemove([
+          {
+            'addressId': addressId,
+            'street': street,
+            'city': city,
+            'state': state,
+            'zipCode': zipCode,
+            'country': country,
+          }
+        ])
+        
+      });
+      
+      // await fetchCart();
+      userModel!.addresses.remove(addressId);
+      notifyListeners();
+      Fluttertoast.showToast(
+          msg: "Đã xóa address", backgroundColor: Colors.green);
+    } catch (e) {
       rethrow;
     }
   }

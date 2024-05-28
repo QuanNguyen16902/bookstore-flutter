@@ -1,62 +1,33 @@
 {
   "project_info": {
-    "project_number": "709623761448",
-    "project_id": "viperbookstore",
-    "storage_bucket": "viperbookstore.appspot.com"
+    "project_number": "152255279280",
+    "project_id": "bookstore1-b8a0c",
+    "storage_bucket": "bookstore1-b8a0c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:709623761448:android:b17b726c541ec9ee70431d",
+        "mobilesdk_app_id": "1:152255279280:android:7baa9c7379b594eff04b75",
         "android_client_info": {
           "package_name": "com.example.bookstore"
         }
       },
       "oauth_client": [
         {
-          "client_id": "709623761448-51fhruoi2o19fbf9dc6b7elotsvvufo1.apps.googleusercontent.com",
+          "client_id": "152255279280-oafc6tjhu6fomht2qe5fth98a9jam772.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA2SNsC08enq4cY_yBqQ-v4vOBJTia9_fE"
+          "current_key": "AIzaSyCfYfwM6hb0T3Uh81-VJ6_byCsZ6V6MEk8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "709623761448-51fhruoi2o19fbf9dc6b7elotsvvufo1.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:709623761448:android:3435b819c215733170431d",
-        "android_client_info": {
-          "package_name": "com.example.bookstore_admin"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "709623761448-51fhruoi2o19fbf9dc6b7elotsvvufo1.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA2SNsC08enq4cY_yBqQ-v4vOBJTia9_fE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "709623761448-51fhruoi2o19fbf9dc6b7elotsvvufo1.apps.googleusercontent.com",
+              "client_id": "152255279280-oafc6tjhu6fomht2qe5fth98a9jam772.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -103,6 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           "createdAt": Timestamp.now(),
           "userWishlist": [],
           "userCart": [],
+          "addresses": [],
         });
         Fluttertoast.showToast(
             msg: "Đăng ký thành công",

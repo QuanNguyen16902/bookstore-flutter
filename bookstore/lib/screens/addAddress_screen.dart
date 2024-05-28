@@ -52,11 +52,15 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       if (currentUser != null) {
         try {
           // Add new address to Firestore
+           final userDocRef = FirebaseFirestore.instance.collection('users').doc(currentUser!.uid);
+          final userDoc = await userDocRef.get();
+           final addresses = List.from(userDoc.get('addresses') ?? []);
+          addresses.add(newAddress.toMap());
           await FirebaseFirestore.instance
               .collection('users')
               .doc(currentUser!.uid)
               .set({
-            'addresses': FieldValue.arrayUnion([newAddress.toMap()]),
+            'addresses': addresses,
             'createdAt': userProvider.userModel!.createdAt,
             'userId': currentUser!.uid,
             'userEmail': userProvider.userModel!.userEmail,
@@ -66,7 +70,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
             'userName': userProvider.userModel!.userName,
          
           });
-
+       
           Navigator.of(context).pop(newAddress);
         } catch (e) {
           print('Failed to add address: $e');
@@ -79,6 +83,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           SnackBar(content: Text('User is not logged in')),
         );
       }
+      
     }
   }
 
@@ -97,7 +102,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
             children: [
               TextFormField(
                 controller: _streetController,
-                decoration: InputDecoration(labelText: 'Street'),
+                decoration: InputDecoration(labelText: 'Đường'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Vui lòng nhập tên đường';
@@ -107,7 +112,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
               ),
               TextFormField(
                 controller: _cityController,
-                decoration: InputDecoration(labelText: 'City'),
+                decoration: InputDecoration(labelText: 'Thành phố'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Vui lòng nhập thành phố';
@@ -117,17 +122,17 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
               ),
               TextFormField(
                 controller: _stateController,
-                decoration: InputDecoration(labelText: 'State'),
+                decoration: InputDecoration(labelText: 'Quận'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập bang';
+                    return 'Vui lòng nhập quận';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _countryController,
-                decoration: InputDecoration(labelText: 'Country'),
+                decoration: InputDecoration(labelText: 'Quốc gia'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Vui lòng nhập quốc gia';

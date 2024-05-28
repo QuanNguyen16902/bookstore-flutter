@@ -15,12 +15,12 @@ void main() async{
    WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: const FirebaseOptions(
-      apiKey: "AIzaSyA2SNsC08enq4cY_yBqQ-v4vOBJTia9_fE",
-      authDomain: "viperbookstore.firebaseapp.com",
-      projectId: "viperbookstore",
-      storageBucket: "viperbookstore.appspot.com",
+     apiKey: "AIzaSyCfYfwM6hb0T3Uh81-VJ6_byCsZ6V6MEk8",
+      authDomain: "bookstore1-b8a0c.firebaseapp.com",
+      projectId: "bookstore1-b8a0c",
+      storageBucket: "bookstore1-b8a0c.appspot.com",
       messagingSenderId: "your_messaging_sender_id",
-      appId: "com.example.bookstore_admin",
+      appId: "com.example.bookstore",
     ),
   );
   runApp(const MyApp());

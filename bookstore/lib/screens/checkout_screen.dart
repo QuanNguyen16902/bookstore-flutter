@@ -1,3 +1,4 @@
+import 'package:bookstore/models/address_model.dart';
 import 'package:bookstore/models/order_model.dart';
 import 'package:bookstore/providers/book_provider.dart';
 import 'package:bookstore/providers/cart_provider.dart';
@@ -28,6 +29,48 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
   String _paymentMethod = 'Tiền mặt';
   String _shippingMethod = 'Hỏa tốc';
   bool isLoading = false;
+  double _shippingCost = 10.0;
+  AddressModel? _selectedAddress;
+  List<AddressModel> _addresses = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAddresses();
+  }
+
+  Future<void> _fetchAddresses() async {
+    // Get the current user's ID
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+
+    if (userId != null) {
+      try {
+        // Fetch the user document from Firestore
+        final userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .get();
+        final userData = userSnapshot.data();
+
+        if (userData != null && userData['addresses'] != null) {
+          final List<dynamic> addressesData = userData['addresses'];
+          final List<AddressModel> addresses =
+              addressesData.map((data) => AddressModel.fromMap(data)).toList();
+          setState(() {
+            _addresses = addresses;
+          });
+        } else {
+          print('No addresses found for the user');
+        }
+      } catch (e) {
+        // Handle errors while fetching addresses
+        print('Error fetching addresses: $e');
+      }
+    } else {
+      print('No user logged in');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
@@ -35,6 +78,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
     final userProvider = Provider.of<UserProvider>(context);
     final cartItems = cartProvider.getCartItems.values.toList();
     final totalPrice = cartProvider.getTotal(bookProvider: bookProvider);
+    final totalCost = totalPrice + _shippingCost;
 
     return Scaffold(
       appBar: AppBar(
@@ -70,7 +114,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
             const SizedBox(height: 10),
             ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: cartItems.length,
               itemBuilder: (context, index) {
                 final item = cartItems[index];
@@ -107,19 +151,58 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
               },
             ),
             Divider(thickness: 2, height: 30),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Total:',
+                      style: TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.normal),
+                    ),
+                    Text(
+                      '\$${totalPrice.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Shipping Cost:',
+                      style: TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.normal),
+                    ),
+                    Text(
+                      '\$${_shippingCost.toStringAsFixed(2)}',
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Divider(thickness: 2, height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Total:',
+                const Text(
+                  'Total Cost:',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '\$${totalPrice.toStringAsFixed(2)}',
-                  style: TextStyle(
+                  '\$${totalCost.toStringAsFixed(2)}',
+                  style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.green),
+                      color: Color.fromARGB(255, 4, 7, 4)),
                 ),
               ],
             ),
@@ -149,19 +232,41 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                     },
                   ),
                   const SizedBox(height: 10),
-                  TextFormField(
+                  DropdownButtonFormField<AddressModel>(
+                    value: _selectedAddress,
                     decoration: InputDecoration(
                       labelText: 'Address',
                       border: OutlineInputBorder(),
                     ),
+                    items: _addresses.map((address) {
+                      return DropdownMenuItem<AddressModel>(
+                        value: address,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('${address.street}, '),
+                            Text('${address.state}, '),
+                            Text('${address.city}, '),
+                            Text('${address.country}, '),
+                            Text('${address.zipCode}, '),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (AddressModel? newValue) {
+                      setState(() {
+                        _selectedAddress = newValue;
+                      });
+                    },
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your address';
+                      if (value == null) {
+                        return 'Please select your address';
                       }
                       return null;
                     },
                     onSaved: (value) {
-                      _address = value!;
+                      _address = _address =
+                          '${value!.street}, ${value.city}, ${value.state}, ${value.country}, ${value.zipCode}';
                     },
                   ),
                   const SizedBox(height: 10),
@@ -190,12 +295,15 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                     items: ['Hỏa tốc', 'Thường']
                         .map((method) => DropdownMenuItem(
                               value: method,
-                              child: Text(method == 'Hỏa tốc' ? method + '(1 ngày)': method + '(3 ngày)') ,
+                              child: Text(method == 'Hỏa tốc'
+                                  ? method + '(1 ngày)'
+                                  : method + '(3 ngày)'),
                             ))
                         .toList(),
                     onChanged: (value) {
                       setState(() {
                         _shippingMethod = value!;
+                        _shippingCost = value == 'Hỏa tốc' ? 10.0 : 5.0;
                       });
                     },
                   ),
@@ -250,8 +358,6 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
     );
   }
 
-  
- 
   Future<void> placeOrderAdvanced({
     required CartProvider cartProvider,
     required BookProvider bookProvider,
@@ -291,16 +397,17 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
         "orderId": orderId,
         "userId": uid,
         "items": items, // Add items list to the order
-        "totalPrice": cartProvider.getTotal(bookProvider: bookProvider),
+        "totalPrice": cartProvider.getTotal(bookProvider: bookProvider) + _shippingCost,
         "userName": _name,
         "address": _address,
         "phoneNumber": _phoneNumber,
         "paymentMethod": "Credit Card", // You can modify this field as needed
         "orderDate": orderDate,
-        "shippingMethod": _shippingMethod, // You can modify this field as needed
+        "shippingMethod":
+            _shippingMethod, // You can modify this field as needed
         "shippingCost": 0, // You can modify this field as needed
-        "status" : OrderStatus.confirmed.toString().split('.').last,
-        "confirmed" : false,
+        "status": OrderStatus.confirmed.toString().split('.').last,
+        "confirmed": false,
       });
 
       await cartProvider.clearCartFromFirebase();
@@ -321,6 +428,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
           ],
         ),
       );
+      userProvider.notifyListeners();
     } catch (e) {
       await MyAppFunction.showErrorOrWarningDialog(
         context: context,
