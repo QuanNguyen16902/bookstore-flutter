@@ -37,10 +37,7 @@ class OrderStatusStepper extends StatelessWidget {
       stepRadius: 20,
       activeStepTextColor: Colors.black87,
       finishedStepBackgroundColor: Colors.green,
-      lineStyle: LineStyle(
-        defaultLineColor: Colors.grey.shade300,
-        lineLength: (MediaQuery.of(context).size.width * 0.5) / steps.length,
-      ),
+      
     );
   }
 }

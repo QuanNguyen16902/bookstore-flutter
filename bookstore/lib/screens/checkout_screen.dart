@@ -3,12 +3,14 @@ import 'package:bookstore/models/order_model.dart';
 import 'package:bookstore/providers/book_provider.dart';
 import 'package:bookstore/providers/cart_provider.dart';
 import 'package:bookstore/providers/user_provider.dart';
+import 'package:bookstore/screens/home_screen.dart';
 import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/appname_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -336,11 +338,19 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    placeOrderAdvanced(
-                      cartProvider: cartProvider,
-                      bookProvider: bookProvider,
-                      userProvider: userProvider,
-                    );
+                    if (_paymentMethod == 'Tiền mặt') {
+                      placeOrderAdvanced(
+                        cartProvider: cartProvider,
+                        bookProvider: bookProvider,
+                        userProvider: userProvider,
+                      );
+                    } else if (_paymentMethod == 'Paypal') {
+                      _startPaypalPayment(
+                          cartProvider: cartProvider,
+                          context: context,
+                          bookProvider: bookProvider,
+                          userProvider: userProvider);
+                    }
                   }
                 },
                 child: Padding(
@@ -356,6 +366,72 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
         ),
       ),
     );
+  }
+
+  void _startPaypalPayment({
+    required BuildContext context,
+    required CartProvider cartProvider,
+    required BookProvider bookProvider,
+    required UserProvider userProvider,
+  }) async {
+    try {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => UsePaypal(
+            sandboxMode: true,
+            clientId: "AYA40mFYAXr9ZDmnHvMEh6HrCryKVCfaNtqYU7Ybe5WEsuDrcsXHFeXP3woBcbKBqRfU9eNAZBVgRKg9",
+            secretKey: "EH4-XkpQeBrGJDFkkWwRq5tvFzmEA8q5qTfznwE9RyH5rgm8vBrY7r1YjsJgeeZAPfT__WYwdK1hje3H",
+            returnURL: HomeScreen.routeName,
+            cancelURL: PlaceOrderScreen.routeName,
+            transactions: [
+              {
+                "amount": {
+                  "total": cartProvider.getTotal(bookProvider: bookProvider) +
+                      _shippingCost,
+                  "currency": "USD",
+                  "details": {
+                    "subtotal": cartProvider
+                        .getTotal(bookProvider: bookProvider)
+                        .toStringAsFixed(2),
+                    "shipping": _shippingCost.toStringAsFixed(2),
+                  },
+                },
+                "description": "The payment transaction description.",
+                "item_list": {
+                  "items":
+                      cartProvider.getCartItems.values.toList().map((item) {
+                    final book = bookProvider.findBookById(item.bookId);
+                    return {
+                      "name": book?.bookTitle ?? "Unknown",
+                      "quantity": item.quantity.toString(),
+                      "price": book?.bookPrice ?? "0.00",
+                      "currency": "USD",
+                    };
+                  }).toList(),
+                },
+              },
+            ],
+            note: "Contact us for any questions on your order.",
+            onSuccess: (Map params) async {
+              print("onSuccess: $params");
+              placeOrderAdvanced(
+                cartProvider: cartProvider,
+                bookProvider: bookProvider,
+                userProvider: userProvider,
+              );
+            },
+            onError: (error) {
+              print("onError: $error");
+            },
+            onCancel: (params) {
+              print('cancelled: $params');
+            },
+          ),
+        ),
+      );
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   Future<void> placeOrderAdvanced({
@@ -397,7 +473,8 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
         "orderId": orderId,
         "userId": uid,
         "items": items, // Add items list to the order
-        "totalPrice": cartProvider.getTotal(bookProvider: bookProvider) + _shippingCost,
+        "totalPrice":
+            cartProvider.getTotal(bookProvider: bookProvider) + _shippingCost,
         "userName": _name,
         "address": _address,
         "phoneNumber": _phoneNumber,

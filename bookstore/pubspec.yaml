@@ -59,7 +59,10 @@ dependencies:
   uuid: ^4.4.0
   #format date
   intl: ^0.17.0
-  easy_stepper: ^0.8.5
+  easy_stepper: ^0.6.0
+  flutter_paypal: ^0.2.0
+  flutter_paypal_checkout: ^1.0.1
+  #payment 
 dev_dependencies:
   flutter_test:
     sdk: flutter

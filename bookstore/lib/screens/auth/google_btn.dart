@@ -3,6 +3,7 @@ import 'package:bookstore/services/app_function.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -11,6 +12,7 @@ class GoogleButton extends StatelessWidget {
   Future<void> signInWithGoogle({required BuildContext context}) async {
     try {
       final googleSignIn = GoogleSignIn();
+      await googleSignIn.signOut();
       final googleAccount = await googleSignIn.signIn();
       if (googleAccount != null) {
         final googleAuth = await googleAccount.authentication;
@@ -31,6 +33,7 @@ class GoogleButton extends StatelessWidget {
               "createdAt": Timestamp.now(),
               "userWishlist": [],
               "userCart": [],
+              "addresses": [],
             });
           }
         }
@@ -39,6 +42,14 @@ class GoogleButton extends StatelessWidget {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         Navigator.pushReplacementNamed(context, RootScreen.routeName);
       });
+      Fluttertoast.showToast(
+            msg: "Đăng nhập thành công",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER_LEFT,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
     } on FirebaseException catch (error) {
       await MyAppFunction.showErrorOrWarningDialog(
           context: context,

@@ -70,7 +70,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
             'userName': userProvider.userModel!.userName,
          
           });
-       
+          userProvider.notifyListeners();
           Navigator.of(context).pop(newAddress);
         } catch (e) {
           print('Failed to add address: $e');
@@ -120,6 +120,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 5,),
               TextFormField(
                 controller: _stateController,
                 decoration: InputDecoration(labelText: 'Quận'),
@@ -130,6 +131,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                   return null;
                 },
               ),
+               const SizedBox(height: 5,),
               TextFormField(
                 controller: _countryController,
                 decoration: InputDecoration(labelText: 'Quốc gia'),
@@ -140,6 +142,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                   return null;
                 },
               ),
+               const SizedBox(height: 5,),
               TextFormField(
                 controller: _zipCodeController,
                 decoration: InputDecoration(labelText: 'Zip Code'),
