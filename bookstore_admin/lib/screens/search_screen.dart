@@ -1,6 +1,5 @@
 import 'package:bookstore_admin/models/book_model.dart';
 import 'package:bookstore_admin/providers/book_provider.dart';
-import 'package:bookstore_admin/services/assets_manager.dart';
 import 'package:bookstore_admin/widget/book_widget.dart';
 import 'package:bookstore_admin/widget/title_text.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
@@ -44,20 +43,24 @@ class SearchScreenState extends State<SearchScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-            leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                "${AssetManager.imagesPath}/book-shop.png",
-              ),
-            ),
+         
             title: TitleTextWidget(label: selectedCategory ?? "Search Books")),
-        body: bookList.isEmpty
-            ? const Center(
-                child: TitleTextWidget(
-                  label: 'Không tìm thấy sách nào',
-                ),
-              )
-            : Padding(
+        body: StreamBuilder<List<BookModel>>(
+            stream: booksProvider.fetchBooksStream(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return  const Center(
+                    child: CircularProgressIndicator(),
+                  );
+             
+              } else if (snapshot.hasError) {
+                return Center(child: SelectableText(snapshot.error.toString()));
+              } else if (snapshot.data == null) {
+                return const Center(
+                  child: SelectableText("Không có sách nào được thêm"),
+                );
+              }
+              return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
@@ -76,16 +79,16 @@ class SearchScreenState extends State<SearchScreen> {
                           child: const Icon(Icons.clear),
                         ),
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          bookListSearch = booksProvider.searchByTitle(
-                              searchText: searchTextController.text);
-                        });
-                      },
+                      // onChanged: (value) {
+                      //   setState(() {
+                      //     bookListSearch = booksProvider.searchByTitle(
+                      //         searchText: searchTextController.text);
+                      //   });
+                      // },
                       onSubmitted: (value) {
                         bookListSearch = booksProvider.searchByTitle(
                             searchText: searchTextController.text);
-                      }, 
+                      },
                     ),
                     const SizedBox(
                       height: 15,
@@ -115,7 +118,8 @@ class SearchScreenState extends State<SearchScreen> {
                     )
                   ],
                 ),
-              ),
+              );
+            }),
       ),
     );
   }

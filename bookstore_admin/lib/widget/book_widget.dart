@@ -3,6 +3,7 @@ import 'package:bookstore_admin/screens/add_edit_book_screen.dart';
 import 'package:bookstore_admin/widget/subtitle_text.dart';
 import 'package:bookstore_admin/widget/title_text.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class BookWidget extends StatefulWidget {
@@ -29,17 +30,22 @@ class BookWidgetState extends State<BookWidget> {
             padding: const EdgeInsets.all(2.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return AddOrEditBookScreen(
-                    bookModel: getCurrentBook,
-                  );
-                },),);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return AddOrEditBookScreen(
+                        bookModel: getCurrentBook,
+                      );
+                    },
+                  ),
+                );
               },
               child: Column(
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: Image.asset(
+                    child: Image.network(
                       getCurrentBook.bookImage,
                       height: size.height * 0.2,
                       width: double.infinity,
@@ -80,7 +86,55 @@ class BookWidgetState extends State<BookWidget> {
                         ),
                         const SizedBox(
                           height: 12.0,
-                        )
+                        ),
+                        IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () async {
+                              final bool confirm = await showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text('Confirm Delete'),
+                                  content: Text(
+                                      'Are you sure you want to delete this book?'),
+                                  actions: [
+                                    TextButton(
+                                      child: Text('Cancel'),
+                                      onPressed: () {
+                                        Navigator.of(ctx).pop(false);
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text('Delete'),
+                                      onPressed: () {
+                                        Navigator.of(ctx).pop(true);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              if (confirm) {
+                                try {
+                                  await bookProviders
+                                      .deleteBook(getCurrentBook.bookId);
+                                  Fluttertoast.showToast(
+                                    msg: 'Book deleted successfully',
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER_LEFT,
+                                    backgroundColor: Colors.green,
+                                    textColor: Colors.white,
+                                  );
+                                } catch (error) {
+                                  Fluttertoast.showToast(
+                                    msg: 'Failed to delete book: $error',
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                  );
+                                }
+                              }
+                            }),
                       ],
                     ),
                   ),

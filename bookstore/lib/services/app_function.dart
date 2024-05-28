@@ -84,34 +84,34 @@ class MyAppFunction {
                     Navigator.pop(context);
                   }
                 }, 
-                icon: const Icon(Icons.camera), 
-                label: const Text("Camera"), 
+                icon: const Icon(Icons.camera),
+                label: const Text("Camera"),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
               TextButton.icon(
                 onPressed: (){
-                  cameraFunct();
+                  galeryFunct();
                   if(Navigator.canPop(context)){
                     Navigator.pop(context);
                   }
-                }, 
-                icon: const Icon(Icons.browse_gallery), 
-                label: const Text("Galery"), 
+                },
+                icon: const Icon(Icons.browse_gallery),
+                label: const Text("Galery"),
                 ),
                       const SizedBox(
                   height: 10,
                 ),
               TextButton.icon(
                 onPressed: (){
-                  cameraFunct();
+                  removeFunct();
                   if(Navigator.canPop(context)){
                     Navigator.pop(context);
                   }
-                }, 
-                icon: const Icon(Icons.remove_circle_outline), 
-                label: const Text("Remove"), 
+                },
+                icon: const Icon(Icons.remove_circle_outline),
+                label: const Text("Remove"),
                 ),
           ],
           ),

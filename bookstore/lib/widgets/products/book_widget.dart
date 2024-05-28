@@ -2,6 +2,7 @@ import 'package:bookstore/inner_screen/book_details.dart';
 import 'package:bookstore/providers/book_provider.dart';
 import 'package:bookstore/providers/cart_provider.dart';
 import 'package:bookstore/providers/viewed_book_provider.dart';
+import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/widgets/products/heart_btn.dart';
 import 'package:bookstore/widgets/subtitle_text.dart';
 import 'package:bookstore/widgets/title_text.dart';
@@ -42,7 +43,7 @@ class BookWidgetState extends State<BookWidget> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: Image.asset(
+                    child: Image.network(
                       getCurrentBook.bookImage,
                       height: size.height * 0.2,
                       width: double.infinity,
@@ -62,9 +63,11 @@ class BookWidgetState extends State<BookWidget> {
                             maxLines: 2,
                           ),
                         ),
-                         Flexible(
+                        Flexible(
                           flex: 2,
-                          child: HeartButtonWidget(bookId: getCurrentBook.bookId,),
+                          child: HeartButtonWidget(
+                            bookId: getCurrentBook.bookId,
+                          ),
                         ),
                       ],
                     ),
@@ -91,13 +94,25 @@ class BookWidgetState extends State<BookWidget> {
                             color: Colors.blue,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(12.0),
-                              onTap: () {
+                              onTap: () async {
                                 if (cartProvider.isBookInCart(
                                     bookId: getCurrentBook.bookId)) {
                                   return;
                                 }
-                                cartProvider.addBookToCart(
-                                    bookId: getCurrentBook.bookId);
+                                // cartProvider.addBookToCart(
+                                //     bookId: getCurrentBook.bookId);
+
+                                try {
+                                  await cartProvider.addToCartFirebase(
+                                      bookId: getCurrentBook.bookId,
+                                      qty: 1,
+                                      context: context);
+                                } catch (e) {
+                                  await MyAppFunction.showErrorOrWarningDialog(
+                                      context: context,
+                                      subtitle: e.toString(),
+                                      fct: () {});
+                                }
                               },
                               splashColor: Colors.red,
                               child: Padding(

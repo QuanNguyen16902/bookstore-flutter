@@ -48,10 +48,12 @@ dependencies:
   card_swiper : ^3.0.0
   image_picker: ^1.0.8
   dotted_border: ^2.1.0
+  fluttertoast: ^8.2.2
+  easy_stepper: ^0.8.5
 #firebase
-  # firebase_core: ^2.14.0
-  # cloud_firestore: ^4.8.1
-  # firebase_storage: ^11.2.3
+  firebase_core: ^2.14.0
+  cloud_firestore: ^4.8.1
+  firebase_storage: ^11.2.3
   #Utils
   uuid: ^4.4.0
 
@@ -81,8 +83,12 @@ flutter:
   assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
-      - assets/
-      - assets/images/
+    - assets/images/
+    - assets/books/
+    - assets/images/profile/
+    - assets/images/banner/
+    - assets/images/book/
+    - assets/images/cart/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

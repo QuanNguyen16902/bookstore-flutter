@@ -21,7 +21,7 @@ class AppConstant {
     CategoryModel(
       id: AssetManager.book1,
       name: 'Computing',
-      image: AssetManager.book1,
+      image: AssetManager.the_age_of_light_by_whitney_scharer,
     ),
     CategoryModel(
       id: AssetManager.book3,
@@ -30,7 +30,7 @@ class AppConstant {
     ),
     CategoryModel(
       id: AssetManager.book2,
-      name: 'AI',
+      name: 'Tiểu thuyết',
       image: AssetManager.book2,
     ),
   ];

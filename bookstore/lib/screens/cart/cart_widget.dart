@@ -30,7 +30,7 @@ class CartWidget extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
-                      child: Image.asset(
+                      child: Image.network(
                         getCurrentBook.bookImage,
                         height: size.height * 0.2,
                         width: size.height * 0.2,
@@ -53,10 +53,15 @@ class CartWidget extends StatelessWidget {
                               ),
                               Column(
                                 children: [
-                                   HeartButtonWidget(bookId: getCurrentBook.bookId,),
+                                  HeartButtonWidget(
+                                    bookId: getCurrentBook.bookId,
+                                  ),
                                   IconButton(
-                                    onPressed: () {
-                                      cartProvider.removeOneItem(bookId: getCurrentBook.bookId);
+                                    onPressed: () async {
+                                      cartProvider.removeCartItemFromFirestore(
+                                          bookId: getCurrentBook.bookId,
+                                          cartId: cartModel.cartId,
+                                          qty: cartModel.quantity);
                                     },
                                     icon: const Icon(
                                       IconlyLight.delete,

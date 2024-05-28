@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+  static const routeName = "/HomeScreen";
 
   static List<String> bannerImages = [
     AssetManager.banner1,
@@ -70,19 +71,27 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 15,
               ),
-              TitleTextWidget(label: "Xem gần nhất"),
+              Visibility(
+                  visible: bookProvider.getBooks.isNotEmpty,
+                  child: TitleTextWidget(label: "Xem gần nhất")),
               const SizedBox(
                 height: 15,
               ),
-              SizedBox(
-                height: size.height * 0.2,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: bookProvider.getBooks.length,
-                  itemBuilder: (context, index) {
-                    return ChangeNotifierProvider.value(value: bookProvider.getBooks[index],
-                    child: LastArrivalProductWidget());
-                  },
+              Visibility(
+                visible: bookProvider.getBooks.isNotEmpty,
+                child: SizedBox(
+                  height: size.height * 0.2,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: bookProvider.getBooks.length < 10
+                        ? bookProvider.getBooks.length
+                        : 10,
+                    itemBuilder: (context, index) {
+                      return ChangeNotifierProvider.value(
+                          value: bookProvider.getBooks[index],
+                          child: LastArrivalProductWidget());
+                    },
+                  ),
                 ),
               ),
               const TitleTextWidget(label: "Categories"),

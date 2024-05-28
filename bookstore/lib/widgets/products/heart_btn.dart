@@ -28,8 +28,17 @@ class HeartButtonState extends State<HeartButtonWidget> {
       decoration: BoxDecoration(color: widget.bgColor, shape: BoxShape.circle),
       child: IconButton(
           style: IconButton.styleFrom(elevation: 10),
-          onPressed: () {
-            wishlistProvider.addOrRemoveFromWishlist(bookId: widget.bookId);
+          onPressed: () async{
+            // wishlistProvider.addOrRemoveFromWishlist(bookId: widget.bookId);
+            if (wishlistProvider.getWishlistItems.containsKey(widget.bookId)) {
+            await  wishlistProvider.removeWishlistItemFromFirestore(
+                  wishlistId: wishlistProvider
+                      .getWishlistItems[widget.bookId]!.wishlistId,
+                  bookId: widget.bookId);
+            }else{
+            await  wishlistProvider.addToWishlistFirebase(bookId: widget.bookId, context: context);
+            }
+            await wishlistProvider.fetchWishlist();
           },
           icon: Icon(
             wishlistProvider.isBookInWishlist(bookId: widget.bookId)

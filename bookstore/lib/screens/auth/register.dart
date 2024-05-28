@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bookstore/consts/validator.dart';
 import 'package:bookstore/inner_screen/loadding_widget.dart';
 import 'package:bookstore/root_screen.dart';
@@ -7,6 +9,7 @@ import 'package:bookstore/widgets/appname_text.dart';
 import 'package:bookstore/widgets/title_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -36,7 +39,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   XFile? avatarUser;
   bool isLoading = false;
   final auth = FirebaseAuth.instance;
-
+  String? userImageUrl;
   @override
   void initState() {
     emailController = TextEditingController();
@@ -67,6 +70,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> registerFunction() async {
     final isValid = formkey.currentState!.validate();
     FocusScope.of(context).unfocus();
+    if (avatarUser == null) {
+      MyAppFunction.showErrorOrWarningDialog(
+          context: context, subtitle: "Hãy chọn ảnh", fct: () {});
+      return;
+    }
 
     if (isValid) {
       try {
@@ -78,36 +86,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
             password: passwordController.text.trim());
         final User? user = auth.currentUser;
         final String uid = user!.uid;
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child("usersImages")
+            .child("${emailController.text.trim()}.jpg");
+        await ref.putFile(File(avatarUser!.path));
+
+        userImageUrl = await ref.getDownloadURL();
+
+
         await FirebaseFirestore.instance.collection("users").doc(uid).set({
-          "userId" : uid,
-          "userName" : nameController.text,
-          "userImage" : "",
-          "userEmail" : emailController.text.toLowerCase(),
-          "createdAt" : Timestamp.now(),
-          "userWishlist" : [],
-          "userCart" : [],
+          "userId": uid,
+          "userName": nameController.text,
+          "userImage": userImageUrl,
+          "userEmail": emailController.text.toLowerCase(),
+          "createdAt": Timestamp.now(),
+          "userWishlist": [],
+          "userCart": [],
         });
         Fluttertoast.showToast(
-          msg: "Đăng ký thành công",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM_LEFT,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-        );
+            msg: "Đăng ký thành công",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM_LEFT,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
         if (!mounted) return;
         Navigator.pushReplacementNamed(context, RootScreen.routeName);
       } on FirebaseException catch (error) {
         await MyAppFunction.showErrorOrWarningDialog(
-            context: context,
-            subtitle: error.message.toString(),
-            fct: () {});
+            context: context, subtitle: error.message.toString(), fct: () {});
       } catch (error) {
         await MyAppFunction.showErrorOrWarningDialog(
-            context: context,
-            subtitle: error.toString(),
-            fct: () {});
+            context: context, subtitle: error.toString(), fct: () {});
       } finally {
         setState(() {
           isLoading = false;
@@ -197,7 +209,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                             onFieldSubmitted: (value) {
-                              FocusScope.of(context).requestFocus(emailFocusNode);
+                              FocusScope.of(context)
+                                  .requestFocus(emailFocusNode);
                             },
                             validator: (value) {
                               return MyValidator.displayNameValidator(value!);

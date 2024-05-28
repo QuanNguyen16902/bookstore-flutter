@@ -41,7 +41,7 @@ class AvatarWidget extends StatelessWidget {
               child: const Padding(
                 padding: EdgeInsets.all(6.0),
                 child: Icon(
-                  Icons.add_shopping_cart_outlined,
+                  Icons.add_a_photo_outlined,
                   size: 20,
                   color: Colors.white,
                 ),

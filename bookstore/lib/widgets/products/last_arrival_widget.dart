@@ -2,6 +2,7 @@ import 'package:bookstore/inner_screen/book_details.dart';
 import 'package:bookstore/models/book_model.dart';
 import 'package:bookstore/providers/cart_provider.dart';
 import 'package:bookstore/providers/viewed_book_provider.dart';
+import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/widgets/products/heart_btn.dart';
 import 'package:bookstore/widgets/subtitle_text.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class LastArrivalProductWidget extends StatelessWidget {
               Flexible(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
-                  child: Image.asset(
+                  child: Image.network(
                     bookModel.bookImage,
                     height: size.width * 0.28,
                     width: size.width * 0.38,
@@ -60,13 +61,22 @@ class LastArrivalProductWidget extends StatelessWidget {
                             bookId: bookModel.bookId,
                           ),
                           IconButton(
-                              onPressed: () {
-                                if (cartProvider.isBookInCart(
+                              onPressed: () async {
+                                  if (cartProvider.isBookInCart(
                                     bookId: bookModel.bookId)) {
                                   return;
                                 }
-                                cartProvider.addBookToCart(
-                                    bookId: bookModel.bookId);
+                                try {
+                                  await cartProvider.addToCartFirebase(
+                                      bookId: bookModel.bookId,
+                                      qty: 1,
+                                      context: context);
+                                } catch (e) {
+                                  await MyAppFunction.showErrorOrWarningDialog(
+                                      context: context,
+                                      subtitle: e.toString(),
+                                      fct: () {},);
+                                }
                               },
                               icon: Icon(cartProvider.isBookInCart(
                                       bookId: bookModel.bookId)

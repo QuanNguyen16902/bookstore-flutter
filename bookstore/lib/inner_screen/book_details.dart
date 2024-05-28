@@ -1,5 +1,6 @@
 import 'package:bookstore/providers/book_provider.dart';
 import 'package:bookstore/providers/cart_provider.dart';
+import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/widgets/appname_text.dart';
 import 'package:bookstore/widgets/products/heart_btn.dart';
 import 'package:bookstore/widgets/subtitle_text.dart';
@@ -20,7 +21,7 @@ class BookDetaisScreenState extends State<BookDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final bookProviders = Provider.of<BookProvider>(context);
-    final cartProviders = Provider.of<CartProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
     String? bookId = ModalRoute.of(context)!.settings.arguments as String?;
     final getCurrentBook = bookProviders.findBookById(bookId!);
     Size size = MediaQuery.of(context).size;
@@ -122,21 +123,32 @@ class BookDetaisScreenState extends State<BookDetailsScreen> {
                                 child: ElevatedButton.icon(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
-                                          cartProviders.isBookInCart(
+                                          cartProvider.isBookInCart(
                                                   bookId: getCurrentBook.bookId)
                                               ? Colors.green
                                               : Colors.red,
                                     ),
-                                    onPressed: () {
-                                      if (cartProviders.isBookInCart(
+                                    onPressed: () async {
+                                      if (cartProvider.isBookInCart(
                                           bookId: getCurrentBook.bookId)) {
                                         return;
                                       }
-                                      cartProviders.addBookToCart(
-                                          bookId: getCurrentBook.bookId);
+                                      try {
+                                        await cartProvider.addToCartFirebase(
+                                            bookId: getCurrentBook.bookId,
+                                            qty: 1,
+                                            context: context);
+                                      } catch (e) {
+                                        await MyAppFunction
+                                            .showErrorOrWarningDialog(
+                                          context: context,
+                                          subtitle: e.toString(),
+                                          fct: () {},
+                                        );
+                                      }
                                     },
                                     icon: Icon(
-                                      cartProviders.isBookInCart(
+                                      cartProvider.isBookInCart(
                                               bookId: getCurrentBook.bookId)
                                           ? Icons.check
                                           : Icons.add_shopping_cart,
@@ -144,7 +156,7 @@ class BookDetaisScreenState extends State<BookDetailsScreen> {
                                       size: 20,
                                     ),
                                     label: Text(
-                                      cartProviders.isBookInCart(
+                                      cartProvider.isBookInCart(
                                               bookId: getCurrentBook.bookId)
                                           ? "Đã thêm vào giỏ hàng"
                                           : "Thêm vào giỏ hàng",

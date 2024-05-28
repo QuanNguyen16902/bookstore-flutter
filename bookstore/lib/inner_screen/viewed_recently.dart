@@ -30,7 +30,7 @@ class ViewedRecentlyScreen extends StatelessWidget {
               elevation: 0,
               leading: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Image.network(
+                child: Image.asset(
                   "${AssetManager.imagesPath}/book-shop.png",
                   width: 40,
                   height: 40,

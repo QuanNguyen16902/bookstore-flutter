@@ -8,13 +8,13 @@ class EmptyCartWidget extends StatelessWidget {
     required this.imagePath,
     required this.title,
     required this.subtitle,
-    required this.buttonText,
+    this.buttonText,
     required this.route,
     
   });
 
-  final String imagePath, title, subtitle, buttonText, route;
-
+  final String imagePath, title, subtitle, route;
+  final String? buttonText;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -64,7 +64,7 @@ class EmptyCartWidget extends StatelessWidget {
                 Navigator.pushNamed(context, route);
               },
               child: Text(
-                buttonText,
+                buttonText!,
                 style: const TextStyle(color: Colors.white),
               ))
         ],

@@ -76,12 +76,12 @@ class SearchScreenState extends State<SearchScreen> {
                           child: const Icon(Icons.clear),
                         ),
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          bookListSearch = booksProvider.searchByTitle(
-                              searchText: searchTextController.text);
-                        });
-                      },
+                      // onChanged: (value) {
+                      //   setState(() {
+                      //     bookListSearch = booksProvider.searchByTitle(
+                      //         searchText: searchTextController.text);
+                      //   });
+                      // },
                       onSubmitted: (value) {
                         bookListSearch = booksProvider.searchByTitle(
                             searchText: searchTextController.text);

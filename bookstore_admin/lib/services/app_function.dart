@@ -14,7 +14,8 @@ class MyAppFunction {
         context: context,
         builder: (context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0)),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             content: Column(mainAxisSize: MainAxisSize.min, children: [
               Image.asset(
@@ -61,63 +62,64 @@ class MyAppFunction {
         });
   }
 
-  static Future<void> ImagePickerDialog ({
+  static Future<void> ImagePickerDialog({
     required BuildContext context,
     required Function cameraFunct,
     required Function galeryFunct,
     required Function removeFunct,
-
-    }) async{
-    await showDialog(context: context, builder: (BuildContext context){
-      return  AlertDialog(
-          title: const Center(
-            child: TitleTextWidget(
-               label: "Choose Option",),
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-            children: [
-              TextButton.icon(
-                onPressed: (){
-                  cameraFunct();
-                  if(Navigator.canPop(context)){
-                    Navigator.pop(context);
-                  }
-                }, 
-                icon: const Icon(Icons.camera), 
-                label: const Text("Camera"), 
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-              TextButton.icon(
-                onPressed: (){
-                  cameraFunct();
-                  if(Navigator.canPop(context)){
-                    Navigator.pop(context);
-                  }
-                }, 
-                icon: const Icon(Icons.browse_gallery), 
-                label: const Text("Galery"), 
-                ),
-                      const SizedBox(
-                  height: 10,
-                ),
-              TextButton.icon(
-                onPressed: (){
-                  cameraFunct();
-                  if(Navigator.canPop(context)){
-                    Navigator.pop(context);
-                  }
-                }, 
-                icon: const Icon(Icons.remove_circle_outline), 
-                label: const Text("Remove"), 
-                ),
-          ],
-          ),
-          ),
-      );
-    });
-    
+  }) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Center(
+              child: TitleTextWidget(
+                label: "Choose Option",
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      cameraFunct();
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+                    },
+                    icon: const Icon(Icons.camera),
+                    label: const Text("Camera"),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextButton.icon(
+                    onPressed: () {
+                      galeryFunct();
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+                    },
+                    icon: const Icon(Icons.browse_gallery),
+                    label: const Text("Galery"),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextButton.icon(
+                    onPressed: () {
+                      removeFunct();
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+                    },
+                    icon: const Icon(Icons.remove_circle_outline),
+                    label: const Text("Remove"),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

@@ -57,7 +57,9 @@ dependencies:
   google_sign_in: ^6.1.4
   #Utils
   uuid: ^4.4.0
-
+  #format date
+  intl: ^0.17.0
+  easy_stepper: ^0.8.5
 dev_dependencies:
   flutter_test:
     sdk: flutter

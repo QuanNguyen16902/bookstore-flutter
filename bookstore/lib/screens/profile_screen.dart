@@ -1,10 +1,11 @@
 import 'package:bookstore/inner_screen/loadding_widget.dart';
-import 'package:bookstore/inner_screen/orders/order_screen.dart';
+import 'package:bookstore/inner_screen/orders/orderlist_screen.dart';
 import 'package:bookstore/inner_screen/viewed_recently.dart';
 import 'package:bookstore/inner_screen/wishlist.dart';
 import 'package:bookstore/models/users_model.dart';
 import 'package:bookstore/providers/theme_provider.dart';
 import 'package:bookstore/providers/user_provider.dart';
+import 'package:bookstore/screens/address_screen.dart';
 import 'package:bookstore/screens/auth/login.dart';
 import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/services/assets_manager.dart';
@@ -65,11 +66,16 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Image.asset(
-            "${AssetManager.imagesPath}/book-shop.png",
-            width: 40,
-            height: 40,
-            fit: BoxFit.fill,
+          child: GestureDetector(
+            onTap: () {
+              const BackButton();
+            },
+            child: Image.asset(
+              "${AssetManager.imagesPath}/book-shop.png",
+              width: 40,
+              height: 40,
+              fit: BoxFit.fill,
+            ),
           ),
         ),
         title: const AppNameTextWidget(
@@ -153,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                         imagePath: AssetManager.orders,
                         text: "Đơn hàng",
                         function: () {
-                          Navigator.of(context).pushNamed(OrderScreen.routeName);
+                          Navigator.of(context).pushNamed(OrderListItem.routeName);
                         }),
                   ),
                   Visibility(
@@ -175,7 +181,10 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                   CustomListTile(
                       imagePath: AssetManager.address,
                       text: "Địa chỉ",
-                      function: () {}),
+                      function: () {
+                          Navigator.pushNamed(
+                            context, AddressScreen.routeName);
+                      }),
                   const Divider(
                     thickness: 1,
                   ),

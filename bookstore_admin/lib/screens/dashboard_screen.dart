@@ -25,7 +25,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Image.network(
+            child: Image.asset(
               "${AssetManager.imagesPath}/book-shop.png",
               width: 40,
               height: 40,

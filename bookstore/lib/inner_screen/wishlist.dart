@@ -26,18 +26,9 @@ class WishListScreen extends StatelessWidget {
             route: SearchScreen.routeName,
           ),)
         : Scaffold(
+       
             appBar: AppBar(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              elevation: 0,
-              leading: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset(
-                  "${AssetManager.imagesPath}/book-shop.png",
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.fill,
-                ),
-              ),
+            
               title: TitleTextWidget(
                 label: "Yêu thích (${wishlistProvider.getWishlistItems.length})",
               ),
@@ -48,7 +39,8 @@ class WishListScreen extends StatelessWidget {
                       isError: false,
                       context: context, 
                       subtitle: "Clear wishlist", 
-                      fct: (){
+                      fct: () async{
+                         await wishlistProvider.clearWishlistFromFirebase();
                           wishlistProvider.clearWishlist();
                       }
                       );

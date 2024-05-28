@@ -8,10 +8,11 @@ class EmptyCartWidget extends StatelessWidget {
     required this.imagePath,
     required this.title,
     required this.subtitle,
-    required this.buttonText,
+    this.buttonText,
   });
 
-  final String imagePath, title, subtitle, buttonText;
+  final String imagePath, title, subtitle;
+  final String? buttonText;
 
   @override
   Widget build(BuildContext context) {

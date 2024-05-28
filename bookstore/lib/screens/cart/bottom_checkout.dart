@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class BottonCheckoutWidget extends StatelessWidget {
-  const BottonCheckoutWidget({super.key});
-
+  const BottonCheckoutWidget({super.key, required this.function});
+  final Function function;
   @override
   Widget build(BuildContext context) {
-     final bookProvider = Provider.of<BookProvider>(context);
+    final bookProvider = Provider.of<BookProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
     return Container(
       decoration: BoxDecoration(
@@ -27,22 +27,26 @@ class BottonCheckoutWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-               Flexible(
+              Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     FittedBox(
                         child: TitleTextWidget(
-                            label: "Total (${cartProvider.getCartItems.length.toString()} books/ ${cartProvider.getQuantity()} items)")),
+                            label:
+                                "Total (${cartProvider.getCartItems.length.toString()} books/ ${cartProvider.getQuantity()} items)")),
                     SubtitleTextWidget(
-                      label: "${cartProvider.getTotal(bookProvider: bookProvider).toStringAsFixed(2)}\$",
+                      label:
+                          "${cartProvider.getTotal(bookProvider: bookProvider).toStringAsFixed(2)}\$",
                       color: Colors.blue,
                     ),
                   ],
                 ),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await function();
+                },
                 child: const Text("Checkout"),
               ),
             ],

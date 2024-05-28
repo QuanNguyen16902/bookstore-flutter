@@ -1,5 +1,5 @@
 import 'package:bookstore_admin/screens/add_edit_book_screen.dart';
-import 'package:bookstore_admin/screens/inner_screens/orders/order_screen.dart';
+import 'package:bookstore_admin/screens/orderlist_screen.dart';
 import 'package:bookstore_admin/screens/search_screen.dart';
 import 'package:bookstore_admin/services/assets_manager.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +29,12 @@ class DashBoardButtonModel{
         Navigator.pushNamed(context, SearchScreen.routeName);
       }
       ),
+   
     DashBoardButtonModel(
-      text: "Xem đơn hàng",  
+      text: "Danh sách đơn hàng",  
       imagesPath: AssetManager.view_orders, 
       onPressed: (){
-        Navigator.pushNamed(context, OrderScreen.routeName);
+        Navigator.pushNamed(context, OrderListItem.routeName);
       }
       ),
   ];
