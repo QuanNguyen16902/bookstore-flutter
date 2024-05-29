@@ -34,6 +34,7 @@ class GoogleButton extends StatelessWidget {
               "userWishlist": [],
               "userCart": [],
               "addresses": [],
+              "userPoint": 0,
             });
           }
         }

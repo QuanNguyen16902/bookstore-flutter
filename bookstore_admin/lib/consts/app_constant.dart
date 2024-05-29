@@ -7,6 +7,7 @@ class AppConstant {
     "AI",
     "Math",
     "IT",
+    "Tiểu thuyết",
   ];
 
   static List<DropdownMenuItem<String>>? get categoriesDropDownList {

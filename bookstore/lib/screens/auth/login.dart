@@ -1,7 +1,6 @@
 import 'package:bookstore/consts/validator.dart';
 import 'package:bookstore/inner_screen/loadding_widget.dart';
 import 'package:bookstore/root_screen.dart';
-import 'package:bookstore/screens/auth/auth_service.dart';
 import 'package:bookstore/screens/auth/forgot_password.dart';
 import 'package:bookstore/screens/auth/google_btn.dart';
 import 'package:bookstore/screens/auth/register.dart';
@@ -25,7 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool hidePassword = true;
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
-  final AuthService _authService = AuthService();
 
   late final FocusNode emailFocusNode;
   late final FocusNode passwordFocusNode;

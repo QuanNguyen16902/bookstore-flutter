@@ -50,7 +50,8 @@ class UserProvider with ChangeNotifier {
         createdAt: userDoc.get("createdAt"),
         addresses: (userDoc.get('addresses') as List<dynamic>)
             .map((item) => AddressModel.fromMap(item))
-            .toList(),
+            .toList(), 
+        userPoint: userDoc.get('userPoint'),
       );
       return userModel;
     } on FirebaseException catch (error) {
@@ -58,6 +59,24 @@ class UserProvider with ChangeNotifier {
     } catch (error) {
       rethrow;
     }
+  }
+
+  // int _userPoints = 0; 
+
+  int getUserPoints() {
+    return getUserModel!.userPoint;
+  }
+
+  Future<void> updateUserPoints(String userId, int points) async {
+    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      'userPoint': FieldValue.increment(points),
+    });
+    notifyListeners();
+  }
+
+  void setUserPoints(int points) {
+    getUserModel!.userPoint = points;
+    notifyListeners();
   }
   
   Future<void> removeAddressFromFirestore ({

@@ -16,13 +16,14 @@ class AddressScreen extends StatefulWidget {
   @override
   _AddressScreenState createState() => _AddressScreenState();
 }
-
+ 
 class _AddressScreenState extends State<AddressScreen> {
   final User? currentUser = FirebaseAuth.instance.currentUser;
   final userstDb = FirebaseFirestore.instance.collection("users");
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    
     return Scaffold(
       appBar: AppBar(
         title: TitleTextWidget(
@@ -48,6 +49,7 @@ class _AddressScreenState extends State<AddressScreen> {
           : ListView.builder(
               itemCount: userProvider.getUserModel!.addresses.length,
               itemBuilder: (context, index) {
+                // userProvider.notifyListeners();
                 final address = userProvider.getUserModel!.addresses[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),

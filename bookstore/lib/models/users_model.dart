@@ -7,7 +7,8 @@ class UserModel with ChangeNotifier {
   final Timestamp createdAt;
   final List userCart, userWishlist;
   final List<AddressModel> addresses;
-  UserModel( {
+  late final int userPoint;
+  UserModel({
     required this.userId,
     required this.userName,
     required this.userImage,
@@ -16,6 +17,7 @@ class UserModel with ChangeNotifier {
     required this.userCart,
     required this.userWishlist,
     required this.addresses,
+    required this.userPoint, 
   });
   Map<String, dynamic> toMap() {
     return {
@@ -42,6 +44,7 @@ class UserModel with ChangeNotifier {
       addresses: (data['addresses'] as List<dynamic>)
           .map((item) => AddressModel.fromMap(item))
           .toList(),
+      userPoint: data['userPoint'] ?? 0,
     );
   }
 }

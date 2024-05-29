@@ -31,13 +31,14 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
   User? user = FirebaseAuth.instance.currentUser;
   UserModel? userModel;
   bool isLoading = true;
+
   Future<void> fetchUserInfo() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
+      userModel = await userProvider.fetchUserInfo();
       setState(() {
         isLoading = true;
       });
-      userModel = await userProvider.fetchUserInfo();
     } catch (error) {
       await MyAppFunction.showErrorOrWarningDialog(
           context: context,
@@ -49,11 +50,12 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
       });
     }
   }
-
+  
   @override
   void initState() {
-    fetchUserInfo();
     super.initState();
+    fetchUserInfo();
+    
   }
 
   @override
@@ -129,6 +131,9 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                       ),
                       SubtitleTextWidget(
                         label:  userModel!.userEmail,
+                      ),
+                      SubtitleTextWidget(
+                        label:  'Point: ${userModel!.userPoint}',
                       )
                     ],
                   ),

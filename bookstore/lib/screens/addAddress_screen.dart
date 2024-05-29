@@ -59,15 +59,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           await FirebaseFirestore.instance
               .collection('users')
               .doc(currentUser!.uid)
-              .set({
-            'addresses': addresses,
-            'createdAt': userProvider.userModel!.createdAt,
-            'userId': currentUser!.uid,
-            'userEmail': userProvider.userModel!.userEmail,
-            'userCart': userProvider.userModel!.userCart,
-            'userImage': userProvider.userModel!.userImage,
-            'userWishlist': userProvider.userModel!.userWishlist,
-            'userName': userProvider.userModel!.userName,
+              .update({
+            'addresses': FieldValue.arrayUnion(addresses),
          
           });
           userProvider.notifyListeners();

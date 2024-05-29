@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-// Define an enum for order statuses
 enum OrderStatus {
   confirmed,
   processing,
@@ -25,7 +24,6 @@ class OrderModel with ChangeNotifier {
   final Timestamp orderDate;
   final ShippingModel shipping;
   final String userId;
-  final int userPoints;
   late final Timestamp shippingDate;
   OrderStatus status;
   bool confirmed = false;
@@ -41,7 +39,6 @@ class OrderModel with ChangeNotifier {
     required this.orderDate,
     required this.shipping,
     required this.userId,
-    required this.userPoints,
     required this.status,// Default status
     required this.confirmed,
   }) {

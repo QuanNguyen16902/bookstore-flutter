@@ -80,7 +80,12 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
     final userProvider = Provider.of<UserProvider>(context);
     final cartItems = cartProvider.getCartItems.values.toList();
     final totalPrice = cartProvider.getTotal(bookProvider: bookProvider);
-    final totalCost = totalPrice + _shippingCost;
+    final totalCost = totalPrice +
+        _shippingCost -
+        _getUserDiscount(
+            userPoints: userProvider.getUserPoints(),
+            cartProvider: cartProvider,
+            bookProvider: bookProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -189,6 +194,27 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                     ),
                   ],
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Discount:',
+                      style: TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.normal),
+                    ),
+                    Text(
+                      '-\$${_getUserDiscount(
+                        cartProvider: cartProvider,
+                        bookProvider: bookProvider,
+                        userPoints: userProvider.getUserModel!.userPoint,
+                      )}',
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black),
+                    ),
+                  ],
+                ),
               ],
             ),
             Divider(thickness: 2, height: 30),
@@ -219,13 +245,13 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
               child: Column(
                 children: [
                   TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Name',
+                    decoration: const InputDecoration(
+                      labelText: 'Tên người nhận',
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your name';
+                        return 'Hãy nhập tên người nhận';
                       }
                       return null;
                     },
@@ -237,7 +263,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                   DropdownButtonFormField<AddressModel>(
                     value: _selectedAddress,
                     decoration: InputDecoration(
-                      labelText: 'Address',
+                      labelText: 'Địa chỉ',
                       border: OutlineInputBorder(),
                     ),
                     items: _addresses.map((address) {
@@ -262,7 +288,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                     },
                     validator: (value) {
                       if (value == null) {
-                        return 'Please select your address';
+                        return 'Hãy chọn địa chỉ';
                       }
                       return null;
                     },
@@ -274,12 +300,12 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                   const SizedBox(height: 10),
                   TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'Phone Number',
+                      labelText: 'Số điện thoại',
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your phone number';
+                        return 'Hãy nhập Sđt';
                       }
                       return null;
                     },
@@ -338,18 +364,19 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    if (_paymentMethod == 'Tiền mặt') {
+                     
+                    if (_paymentMethod == 'Paypal') {
+                       _startPaypalPayment(
+                          cartProvider: cartProvider,
+                          context: context,
+                          bookProvider: bookProvider,
+                          userProvider: userProvider);
+                    } else {
                       placeOrderAdvanced(
                         cartProvider: cartProvider,
                         bookProvider: bookProvider,
                         userProvider: userProvider,
                       );
-                    } else if (_paymentMethod == 'Paypal') {
-                      _startPaypalPayment(
-                          cartProvider: cartProvider,
-                          context: context,
-                          bookProvider: bookProvider,
-                          userProvider: userProvider);
                     }
                   }
                 },
@@ -379,8 +406,10 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
         MaterialPageRoute(
           builder: (BuildContext context) => UsePaypal(
             sandboxMode: true,
-            clientId: "AYA40mFYAXr9ZDmnHvMEh6HrCryKVCfaNtqYU7Ybe5WEsuDrcsXHFeXP3woBcbKBqRfU9eNAZBVgRKg9",
-            secretKey: "EH4-XkpQeBrGJDFkkWwRq5tvFzmEA8q5qTfznwE9RyH5rgm8vBrY7r1YjsJgeeZAPfT__WYwdK1hje3H",
+            clientId:
+                "AYA40mFYAXr9ZDmnHvMEh6HrCryKVCfaNtqYU7Ybe5WEsuDrcsXHFeXP3woBcbKBqRfU9eNAZBVgRKg9",
+            secretKey:
+                "EH4-XkpQeBrGJDFkkWwRq5tvFzmEA8q5qTfznwE9RyH5rgm8vBrY7r1YjsJgeeZAPfT__WYwdK1hje3H",
             returnURL: HomeScreen.routeName,
             cancelURL: PlaceOrderScreen.routeName,
             transactions: [
@@ -434,6 +463,43 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
     }
   }
 
+  double _getUserDiscount(
+      {required int userPoints,
+      required CartProvider cartProvider,
+      required BookProvider bookProvider}) {
+    double discountRate = 0.0;
+    double discountAmount = 0.0;
+
+    // Xác định tỷ lệ giảm giá và số tiền giảm giá dựa trên số điểm của người dùng
+    if (userPoints >= 5) {
+      discountRate = 0.2;
+    } else if (userPoints >= 2) {
+      discountRate = 0.1;
+    }
+ 
+    discountAmount =
+        cartProvider.getTotal(bookProvider: bookProvider) * discountRate;
+
+    // Trả về chuỗi hiển thị discount và số tiền discount
+    return discountAmount;
+  }
+
+  double calculateTotalBill(double totalPrice, int userPoints) {
+    double discount = 0.0;
+
+    // Áp dụng giảm giá nếu người dùng có đủ số điểm
+    if (userPoints >= 5) {
+      discount = 0.2; // Giảm giá 20% nếu có ít nhất 5 điểm
+    } else if (userPoints >= 2) {
+      discount = 0.1; // Giảm giá 10% nếu có ít nhất 2 điểm
+    }
+
+    // Tính tổng hóa đơn sau khi áp dụng giảm giá
+    double discountedPrice = totalPrice - (totalPrice * discount);
+
+    return discountedPrice;
+  }
+
   Future<void> placeOrderAdvanced({
     required CartProvider cartProvider,
     required BookProvider bookProvider,
@@ -468,7 +534,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
           "quantity": detail.quantity,
         });
       }
-
+     
       await FirebaseFirestore.instance.collection("orders").doc(orderId).set({
         "orderId": orderId,
         "userId": uid,
@@ -478,17 +544,22 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
         "userName": _name,
         "address": _address,
         "phoneNumber": _phoneNumber,
-        "paymentMethod": "Credit Card", // You can modify this field as needed
+        "paymentMethod": _paymentMethod,  
         "orderDate": orderDate,
         "shippingMethod":
             _shippingMethod, // You can modify this field as needed
-        "shippingCost": 0, // You can modify this field as needed
+        "shippingCost": _shippingCost, // You can modify this field as needed
         "status": OrderStatus.confirmed.toString().split('.').last,
         "confirmed": false,
       });
-
+     
       await cartProvider.clearCartFromFirebase();
       cartProvider.clearLocalCart();
+       final int pointsEarned = 1;
+      // final int currentPoints = userProvider.getUserPoints();
+      // final int newPoints = currentPoints + pointsEarned;
+      await userProvider.updateUserPoints(
+          uid, pointsEarned); // Cập nhật số điểm trong cơ sở dữ liệu
       showDialog(
         context: context,
         builder: (context) => AlertDialog(

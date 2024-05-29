@@ -27,16 +27,7 @@ class ViewedRecentlyScreen extends StatelessWidget {
         : Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              elevation: 0,
-              leading: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset(
-                  "${AssetManager.imagesPath}/book-shop.png",
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.fill,
-                ),
-              ),
+              
               title: TitleTextWidget(
                 label:
                     "Đã xem gần đây (${viewedBookProvider.getViewedBookItems.length})",

@@ -114,6 +114,16 @@ class OrderDetailScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        const Text("Shipping Method"),
+                        Text(
+                          getCurrentOrder.shipping.method,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         const Text("Payment Method"),
                         Text(
                           getCurrentOrder.paymentMethod,

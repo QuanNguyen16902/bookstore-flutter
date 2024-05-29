@@ -55,8 +55,8 @@ class OrderProvider with ChangeNotifier {
             shipping: ShippingModel(
               method: element.get("shippingMethod"),
               cost: double.parse(element.get("shippingCost").toString()),
-            ), 
-            userPoints: 1, 
+            ),
+            
             
            status: OrderStatus.values.firstWhere((e) => e.toString().split('.').last == element.get('status')), 
            confirmed: element.get('confirmed'),

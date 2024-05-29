@@ -104,6 +104,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           "userWishlist": [],
           "userCart": [],
           "addresses": [],
+          "userPoint": 0,
         });
         Fluttertoast.showToast(
             msg: "Đăng ký thành công",
