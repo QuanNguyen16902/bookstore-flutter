@@ -1,8 +1,8 @@
 import 'package:bookstore/consts/validator.dart';
 import 'package:bookstore/inner_screen/loadding_widget.dart';
 import 'package:bookstore/root_screen.dart';
-import 'package:bookstore/screens/auth/forgot_password.dart';
 import 'package:bookstore/screens/auth/google_btn.dart';
+import 'package:bookstore/screens/auth/password/forgot_password.dart';
 import 'package:bookstore/screens/auth/register.dart';
 import 'package:bookstore/services/app_function.dart';
 import 'package:bookstore/widgets/appname_text.dart';

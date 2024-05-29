@@ -3,8 +3,10 @@ import 'package:bookstore/services/assets_manager.dart';
 import 'package:bookstore/widgets/appname_text.dart';
 import 'package:bookstore/widgets/subtitle_text.dart';
 import 'package:bookstore/widgets/title_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   static const routeName = "/ForgotPasswordScreen";
@@ -35,7 +37,30 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Future<void> forgetPasswordFunct() async {
     final isValid = formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-    if (isValid) {}
+    if (!isValid) {
+      return;
+    }
+
+    final email = emailController.text.trim();
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+       Fluttertoast.showToast(
+        msg: 'Đã gửi thư đổi mật khẩu đến email. Đợi chút!',
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    } catch (error) {
+      Fluttertoast.showToast(
+        msg: 'Gặp lỗi email khi reset password. Hãy thử lại.',
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
   }
 
   @override
@@ -107,17 +132,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.blue,
                       padding: const EdgeInsets.all(12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                     ),
-                      onPressed: () async{
-                        await forgetPasswordFunct();
-                      },
-                      icon: const Icon(IconlyBold.send), 
-                      label:  const Text(
-                          "Request Link",
-                        style: TextStyle( fontSize: 22),
-                      ),
+                    onPressed: () async {
+                      await forgetPasswordFunct();
+                    },
+                    icon: const Icon(IconlyBold.send),
+                    label: const Text(
+                      "Request Link",
+                      style: TextStyle(fontSize: 22),
                     ),
+                  ),
                 )
               ]),
             )

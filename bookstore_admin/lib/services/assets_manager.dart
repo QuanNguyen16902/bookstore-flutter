@@ -37,9 +37,9 @@ static String forgot_password= "$imagesPath/forgot-password.png";
 //cart
   static String shoppingBasket = "$cartImagesPath/empty-cart.png";
 
-// banner
+ 
 static String view_orders= "$imagesPath/view-orders.png";
 static String add_new_book= "$imagesPath/add-new-book.png"; 
 static String show_books= "$imagesPath/show-books.png"; 
-
+ static String consumer = "$imagesPath/consumer.png";
 }

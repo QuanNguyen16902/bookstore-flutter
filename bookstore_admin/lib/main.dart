@@ -1,4 +1,5 @@
 import 'package:bookstore_admin/consts/theme_data.dart';
+import 'package:bookstore_admin/models/user_provider.dart';
 import 'package:bookstore_admin/providers/book_provider.dart';
 import 'package:bookstore_admin/providers/order_provider.dart';
 import 'package:bookstore_admin/providers/theme_provider.dart';
@@ -7,6 +8,7 @@ import 'package:bookstore_admin/screens/dashboard_screen.dart';
 import 'package:bookstore_admin/screens/inner_screens/orders/order_manage.dart';
 import 'package:bookstore_admin/screens/orderlist_screen.dart';
 import 'package:bookstore_admin/screens/search_screen.dart';
+import 'package:bookstore_admin/screens/user_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -66,6 +68,9 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) {
                 return OrderProvider();
               }),
+              ChangeNotifierProvider(create: (_) {
+                return UserProvider();
+              }),
             ],
             child: Consumer<ThemeProvider>(
               builder: (context, themeProvider, child) {
@@ -81,8 +86,8 @@ class MyApp extends StatelessWidget {
                     AddOrEditBookScreen.routeName: (context) =>
                         const AddOrEditBookScreen(),
                     OrderListItem.routeName: (context) => const OrderListItem(),
-                     UpdateOrderScreen.routeName: (context) => const UpdateOrderScreen(),
-                    
+                    UpdateOrderScreen.routeName: (context) => const UpdateOrderScreen(),
+                    UserInfoScreen.routeName:(context) => const UserInfoScreen(),
                   },
                 );
               },

@@ -1,6 +1,7 @@
 import 'package:bookstore_admin/screens/add_edit_book_screen.dart';
 import 'package:bookstore_admin/screens/orderlist_screen.dart';
 import 'package:bookstore_admin/screens/search_screen.dart';
+import 'package:bookstore_admin/screens/user_screen.dart';
 import 'package:bookstore_admin/services/assets_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -27,6 +28,14 @@ class DashBoardButtonModel{
       imagesPath: AssetManager.show_books, 
       onPressed: (){
         Navigator.pushNamed(context, SearchScreen.routeName);
+      }
+      ),
+   
+    DashBoardButtonModel(
+      text: "Thông tin người dùng",  
+      imagesPath: AssetManager.consumer, 
+      onPressed: (){
+        Navigator.pushNamed(context, UserInfoScreen.routeName);
       }
       ),
    

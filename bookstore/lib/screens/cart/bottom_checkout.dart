@@ -21,7 +21,7 @@ class BottonCheckoutWidget extends StatelessWidget {
             color: Colors.grey,
           ))),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(4.0),
         child: SizedBox(
           height: kBottomNavigationBarHeight,
           child: Row(

@@ -48,8 +48,11 @@ class OrderModel with ChangeNotifier {
       return Timestamp.fromDate(orderDateTime.add(Duration(days: 3)));
     }
   }
- 
-
+  
+  String getShortOrderId(){
+    return orderId.toString().replaceRange(5, null, '');
+  }
+   
   void updateStatus(OrderStatus newStatus) {
     status = newStatus;
     notifyListeners();

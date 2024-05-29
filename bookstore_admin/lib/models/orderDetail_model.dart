@@ -17,17 +17,17 @@ class OrderDetailModel with ChangeNotifier{
     required this.bookPrice,
     required this.quantity,
   });
-  //  factory OrderDetailModel.fromMap(DocumentSnapshot doc) {
-  //   Map data = doc.data() as Map<String, dynamic>;
-  //   return OrderDetailModel(
-  //     bookId: data["bookId"],
-  //     bookImage: data["bookImage"],
-  //     bookPrice: data["bookPrice"],
-  //     quantity: data["quantity"],
-  //     bookTitle: data["bookTitle"],
-  //     bookAuthor: data["bookAuthor"],
-  //   );
-  // }
+  factory OrderDetailModel.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data() as Map<String, dynamic>;
+    return OrderDetailModel(
+      bookId: data["bookId"],
+      bookImage: data["bookImage"],
+      bookPrice: data["bookPrice"],
+      quantity: data["quantity"],
+      bookTitle: data["bookTitle"],
+      bookAuthor: data["bookAuthor"],
+    );
+  }
   factory OrderDetailModel.fromMap(DocumentSnapshot doc) {
      Map map = doc.data() as Map<String, dynamic>;
     return OrderDetailModel(

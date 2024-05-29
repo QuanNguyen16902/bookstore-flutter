@@ -260,42 +260,51 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                     },
                   ),
                   const SizedBox(height: 10),
-                  DropdownButtonFormField<AddressModel>(
-                    value: _selectedAddress,
-                    decoration: InputDecoration(
-                      labelText: 'Địa chỉ',
-                      border: OutlineInputBorder(),
+                  SingleChildScrollView(
+                    child: DropdownButtonFormField<AddressModel>(
+                      value: _selectedAddress,
+                      
+                      decoration: InputDecoration(
+                        labelText: 'Địa chỉ',
+                        border: OutlineInputBorder(),
+                      ),
+                      items: _addresses.map((address) {
+                        return DropdownMenuItem<AddressModel>(
+                          value: address,
+                          child: Wrap(
+                            children: [
+                              Container(
+                                width: 250,
+                                height: 50,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                        '${address.street}, ${address.state}, ${address.city}, ${address.country}, ${address.zipCode}',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.clip,),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (AddressModel? newValue) {
+                        setState(() {
+                          _selectedAddress = newValue;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Hãy chọn địa chỉ';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _address = _address =
+                            '${value!.street}, ${value.city}, ${value.state}, ${value.country}, ${value.zipCode}';
+                      },
                     ),
-                    items: _addresses.map((address) {
-                      return DropdownMenuItem<AddressModel>(
-                        value: address,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('${address.street}, '),
-                            Text('${address.state}, '),
-                            Text('${address.city}, '),
-                            Text('${address.country}, '),
-                            Text('${address.zipCode}, '),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (AddressModel? newValue) {
-                      setState(() {
-                        _selectedAddress = newValue;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Hãy chọn địa chỉ';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _address = _address =
-                          '${value!.street}, ${value.city}, ${value.state}, ${value.country}, ${value.zipCode}';
-                    },
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
@@ -364,9 +373,9 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                     
+
                     if (_paymentMethod == 'Paypal') {
-                       _startPaypalPayment(
+                      _startPaypalPayment(
                           cartProvider: cartProvider,
                           context: context,
                           bookProvider: bookProvider,
@@ -476,7 +485,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
     } else if (userPoints >= 2) {
       discountRate = 0.1;
     }
- 
+
     discountAmount =
         cartProvider.getTotal(bookProvider: bookProvider) * discountRate;
 
@@ -534,7 +543,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
           "quantity": detail.quantity,
         });
       }
-     
+
       await FirebaseFirestore.instance.collection("orders").doc(orderId).set({
         "orderId": orderId,
         "userId": uid,
@@ -544,7 +553,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
         "userName": _name,
         "address": _address,
         "phoneNumber": _phoneNumber,
-        "paymentMethod": _paymentMethod,  
+        "paymentMethod": _paymentMethod,
         "orderDate": orderDate,
         "shippingMethod":
             _shippingMethod, // You can modify this field as needed
@@ -552,10 +561,10 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
         "status": OrderStatus.confirmed.toString().split('.').last,
         "confirmed": false,
       });
-     
+
       await cartProvider.clearCartFromFirebase();
       cartProvider.clearLocalCart();
-       final int pointsEarned = 1;
+      final int pointsEarned = 1;
       // final int currentPoints = userProvider.getUserPoints();
       // final int newPoints = currentPoints + pointsEarned;
       await userProvider.updateUserPoints(

@@ -1,16 +1,22 @@
 import 'package:bookstore_admin/consts/validator.dart';
+import 'package:bookstore_admin/models/orderDetail_model.dart';
 import 'package:bookstore_admin/models/order_model.dart';
+import 'package:bookstore_admin/providers/book_provider.dart';
+import 'package:bookstore_admin/providers/order_provider.dart';
 import 'package:bookstore_admin/screens/loadding_widget.dart';
 import 'package:bookstore_admin/services/app_function.dart';
+import 'package:bookstore_admin/utils/date.dart';
 import 'package:bookstore_admin/widget/title_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class UpdateOrderScreen extends StatefulWidget {
   static const routeName = "/UpdateOrderScreen";
-  const UpdateOrderScreen({super.key, this.orderModel});
+  const UpdateOrderScreen({super.key, this.orderModel, this.orderDetail});
   final OrderModel? orderModel;
+  final OrderDetailModel? orderDetail;
   @override
   State<UpdateOrderScreen> createState() => _UpdateOrderScreenState();
 }
@@ -20,11 +26,16 @@ class _UpdateOrderScreenState extends State<UpdateOrderScreen> {
 
   late TextEditingController nameController,
       addressController,
-      phoneNumberController;
+      phoneNumberController,
+      totalCostController,
+      orderDateController,
+      shippingDateController,
+      itemsController;
   late OrderStatus _selectedStatus;
   bool isEditing = false;
   bool? isLoading = false;
   bool? isConfirm = false;
+  List<OrderDetailModel> cartItems = [];
   @override
   void initState() {
     if (widget.orderModel != null) {
@@ -40,6 +51,24 @@ class _UpdateOrderScreenState extends State<UpdateOrderScreen> {
         text: widget.orderModel == null ? "" : widget.orderModel!.address);
     phoneNumberController = TextEditingController(
         text: widget.orderModel == null ? "" : widget.orderModel!.phoneNumber);
+
+    totalCostController = TextEditingController(
+        text: widget.orderModel == null
+            ? ""
+            : widget.orderModel!.totalPrice.toString());
+
+    orderDateController = TextEditingController(
+        text: widget.orderModel == null
+            ? ""
+            : widget.orderModel!.orderDate.formatDate);
+
+    shippingDateController = TextEditingController(
+        text: widget.orderModel == null
+            ? ""
+            : widget.orderModel!.shippingDate.formatDate);
+
+    cartItems = widget.orderModel!.items.toList();
+
     super.initState();
   }
 
@@ -48,6 +77,10 @@ class _UpdateOrderScreenState extends State<UpdateOrderScreen> {
     nameController.dispose();
     addressController.dispose();
     phoneNumberController.dispose();
+    totalCostController.dispose();
+    orderDateController.dispose();
+    shippingDateController.dispose();
+    itemsController.dispose();
     super.dispose();
   }
 
@@ -149,7 +182,11 @@ class _UpdateOrderScreenState extends State<UpdateOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final bookProvider = Provider.of<BookProvider>(context);
+    final orderProvider = Provider.of<OrderProvider>(context);
+
+    String? orderId = ModalRoute.of(context)!.settings.arguments as String?;
+    final getCurrentOrder = orderProvider.findOrderById(orderId!);
     return LoadingWidget(
       isLoading: isLoading!,
       child: GestureDetector(
@@ -235,7 +272,6 @@ class _UpdateOrderScreenState extends State<UpdateOrderScreen> {
                                 );
                               },
                             ),
-                          
                             const Text(
                               "Địa chỉ", // Nhãn cho trường Name
                               style: TextStyle(
@@ -256,7 +292,7 @@ class _UpdateOrderScreenState extends State<UpdateOrderScreen> {
                                 );
                               },
                             ),
-                           const Text(
+                            const Text(
                               "Số điện thoại", // Nhãn cho trường Name
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold),
@@ -271,7 +307,70 @@ class _UpdateOrderScreenState extends State<UpdateOrderScreen> {
                                   toBeReturnedString: "SDT đang trống",
                                 );
                               },
-                              onTap: () {},
+                            ),
+                            const Text(
+                              "Total Cost",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextFormField(
+                              controller: totalCostController,
+                              key: const ValueKey("totalCost"),
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Hãy nhập total cost";
+                                }
+                                return null;
+                              },
+                            ),
+                            const Text(
+                              "Order Date",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextFormField(
+                              controller: orderDateController,
+                              key: const ValueKey("orderDate"),
+                              keyboardType: TextInputType.datetime,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Hãy nhập order date";
+                                }
+                                return null;
+                              },
+                            ),
+                            const Text(
+                              "Shipping Date",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextFormField(
+                              controller: shippingDateController,
+                              key: const ValueKey("shippingDate"),
+                              keyboardType: TextInputType.datetime,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Hãy nhập shipping date";
+                                }
+                                return null;
+                              },
+                            ),
+                            const Text(
+                              "Items",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
                             ),
                           ],
                         ),
@@ -347,4 +446,5 @@ class _UpdateOrderScreenState extends State<UpdateOrderScreen> {
       ),
     );
   }
-}
+  }
+ 

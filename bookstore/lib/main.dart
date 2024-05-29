@@ -15,8 +15,8 @@ import 'package:bookstore/providers/wishlist_provider.dart';
 import 'package:bookstore/root_screen.dart';
 import 'package:bookstore/screens/addAddress_screen.dart';
 import 'package:bookstore/screens/address_screen.dart';
-import 'package:bookstore/screens/auth/forgot_password.dart';
 import 'package:bookstore/screens/auth/login.dart';
+import 'package:bookstore/screens/auth/password/forgot_password.dart';
 import 'package:bookstore/screens/auth/register.dart';
 import 'package:bookstore/screens/checkout_screen.dart';
 import 'package:bookstore/screens/home_screen.dart';
@@ -112,6 +112,8 @@ class MyApp extends StatelessWidget {
                   RegisterScreen.routeName: (context) => const RegisterScreen(),
                   ForgotPasswordScreen.routeName: (context) =>
                       const ForgotPasswordScreen(),
+                  // PasswordResetPage.routeName: (context) =>
+                  //      PasswordResetPage(),
                   OrderScreen.routeName: (context) => const OrderScreen(),
                   SearchScreen.routeName: (context) => const SearchScreen(),
                   LoginScreen.routeName: (context) => const LoginScreen(),

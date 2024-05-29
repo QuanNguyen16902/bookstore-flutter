@@ -8,6 +8,13 @@ class OrderProvider with ChangeNotifier {
   List<OrderModel> orders = [];
   List<OrderModel> get getOrders => orders;
 
+  List<OrderModel> searchByUserId({required String searchText}) {
+    List<OrderModel> searchList = orders
+        .where((element) =>
+            element.userId.toLowerCase().contains(searchText.toLowerCase()))
+        .toList();
+    return searchList;
+  }
   OrderModel? findOrderById(String orderId) {
     if (orders.where((element) => element.orderId == orderId).isEmpty) {
       return null;
